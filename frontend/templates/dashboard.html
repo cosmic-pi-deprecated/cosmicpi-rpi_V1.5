@@ -1,0 +1,14 @@
+{% extends "cosmic_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block head_additions %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/c3.min.css') }}">
+	<script src="{{ url_for('static',filename='js/c3.min.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/d3.v3.js') }}"></script>
+{% endblock %}
+{% block content %}
+	<h1>Index</h1>
+	<div id='line_chart_div'></div>
+	<script type="text/javascript">
+		c3.generate({{chart_json|safe}})
+	</script>
+{% endblock %}

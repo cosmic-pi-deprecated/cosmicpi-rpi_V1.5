@@ -1,0 +1,19 @@
+
+Output:
+
+Event: sub second micros:SubSeconds; Event Count:x
+TemperatureC: X;
+Humidity: X;
+AccelX: X;
+AccelY: X;
+AccelZ: X;
+MagX: X;
+MagY: X;
+MagZ: X;
+Pressure: X;
+
+To extract from GPS string
+Longitude: X;
+Latitude: X;
+UTCUnixTime
+

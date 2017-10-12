@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>{% block title %}{% endblock %} | Cosmic Pi | Watch cosmic rays in real time</title>
+
+	<link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static',filename='css/cosmicpi.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static',filename='css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+	{% block head_additions %}{% endblock %}
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar">
+            <a href="#">
+                <img src="{{ url_for('static',filename='images/logo_small_transp.png') }}" id="logo" />
+            </a>
+
+            <hr class="hideable" />
+
+            <ul>
+                <li>
+                    <a href="https://cosmicpi.github.io/" target="_blank">
+                        <i class="fa fa-wechat"></i>
+                        <span class="hideable">Website <i class="fa fa-external-link"></i></span>
+                    </a>
+                    <hr />
+                </li>
+
+                <li>
+                    <a href="/dashboard">
+                        <i class="fa fa-dashboard"></i>
+                        <span class="hideable">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/settings">
+                        <i class="fa fa-gears"></i>
+                        <span class="hideable">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/about">
+                        <i class="fa fa-info-circle"></i>
+                        <span class="hideable">About</span>
+                    </a>
+                </li>
+            </ul>
+
+            <hr class="hideable" />
+			
+			
+			
+            <p class="hideable">
+                <a href="#" v-on:click.prevent="onChange('clouds')">Clouds</a> |
+                <a href="#" v-on:click.prevent="onChange('mountains')">Mountains</a> |
+                <a href="#" v-on:click.prevent="onChange('nasa')">NASA</a>
+            </p>
+
+            <hr class="hideable" />
+
+            <p class="hideable">
+                Copyright © Cosmic Pi Inc. 2015. <br />All Rights Reserved. <br />
+            </p>
+        </div>
+
+
+        <div id="content">
+            <div class="row">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+	<script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+    <!--<script src="{{ url_for('static',filename='js/chart.min.js') }}"></script>-->
+    <script src="{{ url_for('static',filename='js/khtml_all.js') }}"></script>
+    <!--<script src="{{ url_for('static',filename='js/events.js') }}"></script>-->
+    <!--<script src="{{ url_for('static',filename='js/cosmicpi.js') }}"></script>-->
+    <script src="{{ url_for('static',filename='js/vue.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/vue-router.min.js') }}"></script>
+
+    <script>
+
+    const router = new VueRouter({
+        routes: []
+    });
+    const app = new Vue({
+        router: router,
+        methods: {
+            onChange(name) {
+                node = document.getElementById('app');
+                node.style.backgroundImage = "url('{{ url_for('static',filename='images/background_') }}" + name + ".jpg')";
+            }
+        }
+    }).$mount('#app')
+    </script>
+</body>
+</html>

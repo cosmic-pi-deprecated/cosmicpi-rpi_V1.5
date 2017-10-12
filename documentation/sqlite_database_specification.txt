@@ -1,0 +1,18 @@
+SQL database
+
+Table "Events" fields:
+UTCUnixTime	INTEGER
+SubSeconds REAL
+TemperatureC	REAL
+Humidity	REAL
+AccelX	REAL
+AccelY	REAL
+AccelZ	REAL
+MagX	REAL
+MagY	REAL
+MagZ	REAL
+Pressure	REAL
+Longitude	REAL
+Latitude	REAL
+DetectorName	TEXT
+DetectorVersion	TEXT
