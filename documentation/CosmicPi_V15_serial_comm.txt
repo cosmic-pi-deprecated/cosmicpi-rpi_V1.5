@@ -1,5 +1,4 @@
 This document describes the output from the Arduino DUE, that is parsed and stored.
-There is potentially more data coming from the Arduino, but it is not used at the moment and simply ignored.
 
 Directly parsed into the SQLite database
     Event: sub second micros:SubSeconds; Event Count:x
@@ -24,8 +23,16 @@ Directly parsed into the SQLite database
         Meaning: Pressure in mbar.
 
 Strings starting with '$' are strings coming from the GPS.
-From there we extract:
+From there we extract and store into the SQLite database:
     Longitude
     Latitude
     UTCUnixTime
 See the NEMA documentation for more info on these strings: http://aprs.gids.nl/nmea/#gga
+
+Currently unused output:
+    TemperatureCHumid: X;
+        Meaning: Temperature reported from the humidity sensor in °C.
+    TemperatureCBaro: X;
+        Meaning: Temperature reported from the pressure sensor in °C.
+    Altitude: X;
+        Meaning: Altitude reported from the pressure sensor in meter.
