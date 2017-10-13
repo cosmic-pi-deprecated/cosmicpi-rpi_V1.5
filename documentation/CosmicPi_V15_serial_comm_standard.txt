@@ -1,19 +1,19 @@
+Output from Arduino:
 
-Output:
+Directly parsed into the SQLite database
+    Event: sub second micros:SubSeconds; Event Count:x
+    TemperatureC: X;
+    Humidity: X;
+    AccelX: X;
+    AccelY: X;
+    AccelZ: X;
+    MagX: X;
+    MagY: X;
+    MagZ: X;
+    Pressure: X;
 
-Event: sub second micros:SubSeconds; Event Count:x
-TemperatureC: X;
-Humidity: X;
-AccelX: X;
-AccelY: X;
-AccelZ: X;
-MagX: X;
-MagY: X;
-MagZ: X;
-Pressure: X;
-
-To extract from GPS string
-Longitude: X;
-Latitude: X;
-UTCUnixTime
+To extract from GPS strings:
+    Longitude: X;
+    Latitude: X;
+    UTCUnixTime: x;
 
