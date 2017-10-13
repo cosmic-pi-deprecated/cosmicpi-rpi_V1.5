@@ -2,7 +2,7 @@
 This program manages the connection to an attached detector.
 
 Features:
-    Configurable via ../config/detector.config
+    Configurable via ../config/CosmicPi.config
     Start and/or setup the selected detector
     Calibrate selected detector
     Store event and sensor data in an sqlite data base
@@ -11,8 +11,6 @@ This program uses the interface of the class detector.
 Thus, new detectors should be added via subclassing detector.
 
 '''
-config_sqlite_location = "../storage/sqlite_db"
-
 import serial
 import time
 import threading
@@ -20,7 +18,7 @@ import sqlite3
 import copy
 import datetime
 from serial import SerialException
-
+import configparser
 
 
 class detector():
@@ -93,14 +91,14 @@ class detector():
 
 
 class CosmicPi_V15(detector, threading.Thread):
-    def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, raw_output_file=''):
+    def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, raw_output_file_location=''):
         detector.__init__(self, "CosmicPi V1.5", "1.5.1", sqlite_location)
         # todo: put the thread inheritance one higher
         threading.Thread.__init__(self)
         # init vars
         self._gps_ok = False
         # start the detector
-        self._output_file = raw_output_file
+        self._output_file = raw_output_file_location
         self._event_dict = copy.deepcopy(self._example_event_dict)
         self._event_dict_confirmed = copy.deepcopy(self._example_event_dict)
         self._event_dict_confirmed.pop('SubSeconds')
@@ -278,7 +276,29 @@ class CosmicPi_V15(detector, threading.Thread):
 #det = detector("Test1", "TestVersion1", config_sqlite_location)
 #det._commit_event_dict(det._example_event_dict)
 
-det = CosmicPi_V15("COM5", 115200, config_sqlite_location, raw_output_file='1-5_raw_output.log')
+# settings files
+CONFIG_FILE = "../config/CosmicPi.config"
+
+# read configuration
+# Todo: Put the config parser into a propper class
+# Todo: Implement proper error catching for configparser (e.g. non existent keys or file)
+# read configuration
+config = configparser.ConfigParser()
+config.read(CONFIG_FILE)
+detector_class = config.get("Detector", "detector_class")
+sqlite_location = config.get("Storage", "sqlite_location")
+
+# instanciate up the requested detector
+det = 0
+if detector_class == "CosmicPi_V15":
+    serial_port = config.get(detector_class, "serial_port")
+    baud_rate = config.get(detector_class, "baud_rate")
+    raw_output_file_location = config.get(detector_class, "raw_output_file_location")
+    det = CosmicPi_V15(serial_port, baud_rate, sqlite_location, raw_output_file_location=raw_output_file_location)
+if det == 0:
+    print("ERROR: Could not find the detector class: " + str(detector_class))
+
+# start the detector
 print("INFO: Detector init")
 det.initzilize_detector()
 print("INFO: Starting detector")
