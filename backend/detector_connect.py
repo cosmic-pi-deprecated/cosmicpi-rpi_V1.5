@@ -19,6 +19,7 @@ import threading
 import sqlite3
 import copy
 import datetime
+from serial import SerialException
 
 
 
@@ -105,14 +106,27 @@ class CosmicPi_V15(detector, threading.Thread):
         self._event_dict_confirmed.pop('SubSeconds')
         self._all_data_collected = False
         self._time_from_gps = datetime.datetime(2000, 1, 2, 3, 4, 5, tzinfo=None)
-        # empty the output file on boot
+        # store init values
+        self.serial_port = serial_port
+        self.baud_rate = baud_rate
+        self.timeout = timeout
+
+
+    def initzilize_detector(self):
+        # empty the output file on init
         if self._output_file is not '':
             with open(self._output_file, 'w') as f:
                 f.write(" ")
-        self.ser = serial.Serial(serial_port, baud_rate, timeout=timeout)
-
-    def initzilize_detector(self):
-        pass # nothing to do here (yet)
+        connected = False
+        while connected == False:
+            try:
+                self.ser = serial.Serial(self.serial_port, self.baud_rate, timeout=self.timeout)
+            except SerialException as e:
+                print("ERROR: Could not establish a serial connection! Retrying in a bit.")
+                print(e)
+                time.sleep(10)
+                continue;
+            connected = True
 
     def start(self):
         # make sure we empty the confirmations, to force new ones
@@ -128,138 +142,144 @@ class CosmicPi_V15(detector, threading.Thread):
     def run(self):
         # create an artificial interrupt
         while True:
+            event_bool = False
             # read lines from serial and parse them
+            #print("DEBUG: Reading line")
             event_bool = self._read_parse_and_check_for_event()
+
             # when there is an event store it
             if event_bool:
+                #print("DEBUG: Sending event")
                 self._commit_event_dict(self._event_dict)
 
     def _read_parse_and_check_for_event(self):
         # read a line and directly store it in the raw data
-        line = self.ser.readline()
+        try:
+            line = self.ser.readline()
+        except SerialException as e:
+            print("ERROR: Somebody unplugged the damn cable! SerialException:")
+            print(e)
+            raise RuntimeError("The detector can not function without a serial connection.")
         line_str = str(line)
         if self._output_file is not '':
             with open(self._output_file, 'a') as f:
                 f.write(line_str+"\n")
 
-        # get output data_type
-        data_type = line_str.split(':')[0]
+        # parsing
+        try:
+            # get output data_type
+            data_type = line_str.split(':')[0]
 
-        # check if we have the type in our event dict
-        if data_type in self._event_dict.keys():
-            # do a second sanity check
-            if (not (line_str.count(';') == 1)):
-                return False
-            data = line_str.split(':')[1].split(';')[0]
-            try:
-                self._event_dict[data_type] = float(data)
-            except ValueError as e:
-                print("Error while converting a number from the following line: " + str(line_str))
-                print(e)
-                return False
-            # mark the value as recieved
-            self._event_dict_confirmed[data_type] = True
-            return False
-
-        # check for gps
-        if data_type == "PPS":
-            gps_lock_sting = line_str.split(':')[2]
-            gps_lock_sting = gps_lock_sting.split(';')[0]
-            # sanity check
-            if (len(gps_lock_sting) == 1):
-                self._gps_ok = bool(int(gps_lock_sting))
-                # increment the time as well (with that we should be on the safe side of having events at the right time
-                self._event_dict['UTCUnixTime'] += 1;
-
-        # check for GPS stings
-        gps_type = line_str.split(',')[0]
-        # check for a date string
-        if gps_type == "$GPZDA":
-            # sanity check
-            if not (line_str.count(',') == 6):
-                return False
-            g_time_string = line_str.split(',')[1].split('.')[0]    # has format hhmmss
-            hour = int(g_time_string[0:2])
-            minute = int(g_time_string[2:4])
-            second = int(g_time_string[4:6])
-            day = int(line_str.split(',')[2])
-            month = int(line_str.split(',')[3])
-            year = int(line_str.split(',')[4])
-            self._time_from_gps = datetime.datetime(year,
-                                                    month,
-                                                    day,
-                                                    hour,
-                                                    minute,
-                                                    second,
-                                                    tzinfo=None)
-            self._event_dict['UTCUnixTime'] = (self._time_from_gps - datetime.datetime(1970,1,1)).total_seconds()
-            self._event_dict_confirmed['UTCUnixTime'] = True
-            tt = self._event_dict['UTCUnixTime']
-            return False
-
-        # check for a location string
-        if gps_type == "$GPGGA":
-            # sanity check
-            if not (line_str.count(',') == 14):
-                return False
-            # use this as documentation for the string: http://aprs.gids.nl/nmea/#gga
-            lat = line_str.split(',')[2]
-            lat = float(lat[0:2])
-            minutes = line_str.split(',')[2]
-            minutes = float(minutes[2:len(minutes)])
-            lat += minutes / 60.
-            if line_str.split(',')[3] == 'S':
-                lat = -lat
-            lon = line_str.split(',')[4]
-            lon = float(lon[0:3])
-            minutes = line_str.split(',')[4]
-            minutes = float(minutes[3:len(minutes)])
-            lon += minutes / 60.
-            if line_str.split(',')[5] == 'W':
-                lon = -lon
-
-            self._event_dict['Latitude'] = lat
-            self._event_dict_confirmed['Latitude'] = True
-            self._event_dict['Longitude'] = lon
-            self._event_dict_confirmed['Longitude'] = True
-            return False
-
-
-        # do a pre check if we have all data for a full event stack
-        if self._gps_ok == False:
-            return False
-        if not self._all_data_collected:
-            for element in self._event_dict_confirmed:
-                if bool(self._event_dict_confirmed[element]) == False:
+            # check if we have the type in our event dict
+            if data_type in self._event_dict.keys():
+                # do a second sanity check
+                if (not (line_str.count(';') == 1)):
                     return False
-            # if we arrive here we have enough data and the check is obsolete
-            self._all_data_collected = True
-
-        # check if we have an event
-        if data_type == "Event":
-            # sanity check
-            if not( (line_str.count(':')==3) and (line_str.count(';')==1) ):
+                data = line_str.split(':')[1].split(';')[0]
+                self._event_dict[data_type] = float(data)
+                # mark the value as recieved
+                self._event_dict_confirmed[data_type] = True
                 return False
-            sub_sec_string = line_str.split(':')[2]
-            sub_sec_string = sub_sec_string.split(';')[0]
-            # currently we are getting micros() here
-            # so divide them by
-            self._event_dict['SubSeconds'] = float(sub_sec_string) / 1000000.0
-            # make sure we have a connection to the GPS
-            return True
-        return False
+
+            # check for gps
+            if data_type == "PPS":
+                gps_lock_sting = line_str.split(':')[2]
+                gps_lock_sting = gps_lock_sting.split(';')[0]
+                # sanity check
+                if (len(gps_lock_sting) == 1):
+                    self._gps_ok = bool(int(gps_lock_sting))
+                    # increment the time as well (with that we should be on the safe side of having events at the right time
+                    self._event_dict['UTCUnixTime'] += 1;
+
+            # check for GPS stings
+            gps_type = line_str.split(',')[0]
+            # check for a date string
+            if gps_type == "$GPZDA":
+                # sanity check
+                if not (line_str.count(',') == 6):
+                    return False
+                g_time_string = line_str.split(',')[1].split('.')[0]    # has format hhmmss
+                hour = int(g_time_string[0:2])
+                minute = int(g_time_string[2:4])
+                second = int(g_time_string[4:6])
+                day = int(line_str.split(',')[2])
+                month = int(line_str.split(',')[3])
+                year = int(line_str.split(',')[4])
+                self._time_from_gps = datetime.datetime(year,
+                                                        month,
+                                                        day,
+                                                        hour,
+                                                        minute,
+                                                        second,
+                                                        tzinfo=None)
+                self._event_dict['UTCUnixTime'] = (self._time_from_gps - datetime.datetime(1970,1,1)).total_seconds()
+                self._event_dict_confirmed['UTCUnixTime'] = True
+                tt = self._event_dict['UTCUnixTime']
+                return False
+
+            # check for a location string
+            if gps_type == "$GPGGA":
+                # sanity check
+                if not (line_str.count(',') == 14):
+                    return False
+                # use this as documentation for the string: http://aprs.gids.nl/nmea/#gga
+                lat = line_str.split(',')[2]
+                lat = float(lat[0:2])
+                minutes = line_str.split(',')[2]
+                minutes = float(minutes[2:len(minutes)])
+                lat += minutes / 60.
+                if line_str.split(',')[3] == 'S':
+                    lat = -lat
+                lon = line_str.split(',')[4]
+                lon = float(lon[0:3])
+                minutes = line_str.split(',')[4]
+                minutes = float(minutes[3:len(minutes)])
+                lon += minutes / 60.
+                if line_str.split(',')[5] == 'W':
+                    lon = -lon
+
+                self._event_dict['Latitude'] = lat
+                self._event_dict_confirmed['Latitude'] = True
+                self._event_dict['Longitude'] = lon
+                self._event_dict_confirmed['Longitude'] = True
+                return False
+
+
+            # do a pre check if we have all data for a full event stack
+            if self._gps_ok == False:
+                return False
+            if not self._all_data_collected:
+                for element in self._event_dict_confirmed:
+                    if bool(self._event_dict_confirmed[element]) == False:
+                        return False
+                # if we arrive here we have enough data and the check is obsolete
+                self._all_data_collected = True
+
+            # check if we have an event
+            if data_type == "Event":
+                # sanity check
+                if not( (line_str.count(':')==3) and (line_str.count(';')==1) ):
+                    return False
+                sub_sec_string = line_str.split(':')[2]
+                sub_sec_string = sub_sec_string.split(';')[0]
+                # currently we are getting micros() here
+                # so divide them by
+                self._event_dict['SubSeconds'] = float(sub_sec_string) / 1000000.0
+                # make sure we have a connection to the GPS
+                return True
+            return False
+        except IndexError as e:
+            print("WARNING: Error while accessing the result of splitting a the following line:" + str(line_str))
+            return False
+        except ValueError as e:
+            print("WARNING: Error while converting a number from the following line: " + str(line_str))
+            return False
 
 #det = detector("Test1", "TestVersion1", config_sqlite_location)
 #det._commit_event_dict(det._example_event_dict)
 
 det = CosmicPi_V15("COM5", 115200, config_sqlite_location, raw_output_file='1-5_raw_output.log')
-#det.start()
-print "det init"
-while True:
-    # read lines from serial and parse them
-    print "reading line"
-    event_bool = det._read_parse_and_check_for_event()
-    # when there is an event store it
-    if event_bool:
-        print "sending event"
-        det._commit_event_dict(det._event_dict)
+print("INFO: Detector init")
+det.initzilize_detector()
+print("INFO: Starting detector")
+det.start()
