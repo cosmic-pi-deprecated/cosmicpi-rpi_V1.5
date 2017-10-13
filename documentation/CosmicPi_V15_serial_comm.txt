@@ -1,0 +1,31 @@
+This document describes the output from the Arduino DUE, that is parsed and stored.
+There is potentially more data coming from the Arduino, but it is not used at the moment and simply ignored.
+
+Directly parsed into the SQLite database
+    Event: sub second micros:SubSeconds; Event Count:x
+        Meaning: An event has happened at SubSeconds in this second. Event Count is as continuous counter starting at boot.
+    TemperatureC: X;
+        Meaning: Current average of all temperature sensors, in °C.
+    Humidity: X;
+        Meaning: Relative humidity in %.
+    AccelX: X;
+        Meaning: Acceleration in X-direction in m/s^2.
+    AccelY: X;
+        Meaning: Acceleration in Y-direction in m/s^2.
+    AccelZ: X;
+        Meaning: Acceleration in Z-direction in m/s^2.
+    MagX: X;
+        Meaning: Magnetic field in X-direction in Gauss.
+    MagY: X;
+        Meaning: Magnetic field in X-direction in Gauss.
+    MagZ: X;
+        Meaning: Magnetic field in X-direction in Gauss.
+    Pressure: X;
+        Meaning: Pressure in mbar.
+
+Strings starting with '$' are strings coming from the GPS.
+From there we extract:
+    Longitude
+    Latitude
+    UTCUnixTime
+See the NEMA documentation for more info on these strings: http://aprs.gids.nl/nmea/#gga
