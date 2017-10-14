@@ -147,7 +147,7 @@ class CosmicPi_V15(detector, threading.Thread):
 
             # when there is an event store it
             if event_bool:
-                #print("DEBUG: Sending event")
+                print("DEBUG: Sending event")
                 self._commit_event_dict(self._event_dict)
 
     def _read_parse_and_check_for_event(self):
@@ -262,9 +262,13 @@ class CosmicPi_V15(detector, threading.Thread):
                 sub_sec_string = sub_sec_string.split(';')[0]
                 # currently we are getting micros() here
                 # so divide them by
-                self._event_dict['SubSeconds'] = float(sub_sec_string) / 1000000.0
-                # make sure we have a connection to the GPS
-                return True
+                current_subSeconds = float(sub_sec_string) / 1000000.0
+                # make sure we are actually seeing something new
+                if (self._event_dict['SubSeconds'] == current_subSeconds):
+                    return False
+                else:
+                    self._event_dict['SubSeconds'] = current_subSeconds
+                    return True
             return False
         except IndexError as e:
             print("WARNING: Error while accessing the result of splitting a the following line:" + str(line_str))
