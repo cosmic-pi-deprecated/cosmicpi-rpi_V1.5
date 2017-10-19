@@ -91,7 +91,7 @@ class detector():
 
 
 class CosmicPi_V15(detector, threading.Thread):
-    def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, raw_output_file_location=''):
+    def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, enable_raw_output=False):
         detector.__init__(self, "CosmicPi V1.5", "1.5.1", sqlite_location)
         # todo: put the thread inheritance one higher
         threading.Thread.__init__(self)
@@ -107,9 +107,10 @@ class CosmicPi_V15(detector, threading.Thread):
         self.baud_rate = baud_rate
         self.timeout = timeout
         # setup the writing onto disk
+        self.enable_raw_output = enable_raw_output
         self._ouput_file_handler = 0
-        if raw_output_file_location is not 'none':
-            self._ouput_file_handler = open(raw_output_file_location, 'w')
+        if self.enable_raw_output is True:
+            self._ouput_file_handler = open("1-5_raw_output.log", 'w')
             # empty the output file
             self._ouput_file_handler.write(" ")
 
@@ -159,7 +160,7 @@ class CosmicPi_V15(detector, threading.Thread):
             print(e)
             raise RuntimeError("The detector can not function without a serial connection.")
         line_str = str(line)
-        if not (self._ouput_file_handler == 0):
+        if self.enable_raw_output is True:
             self._ouput_file_handler.write(line_str)
 
         # parsing
@@ -297,8 +298,8 @@ det = 0
 if detector_class == "CosmicPi_V15":
     serial_port = config.get(detector_class, "serial_port")
     baud_rate = config.get(detector_class, "baud_rate")
-    raw_output_file_location = config.get(detector_class, "raw_output_file_location")
-    det = CosmicPi_V15(serial_port, baud_rate, sqlite_location, raw_output_file_location=raw_output_file_location)
+    enable_raw_output = config.getboolean(detector_class, "enable_raw_output")
+    det = CosmicPi_V15(serial_port, baud_rate, sqlite_location, enable_raw_output=enable_raw_output)
 if det == 0:
     print("ERROR: Could not find the detector class: " + str(detector_class))
 
