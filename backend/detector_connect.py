@@ -95,10 +95,8 @@ class CosmicPi_V15(detector, threading.Thread):
         detector.__init__(self, "CosmicPi V1.5", "1.5.1", sqlite_location)
         # todo: put the thread inheritance one higher
         threading.Thread.__init__(self)
-        # init vars
+        # initilize the needed data structures
         self._gps_ok = False
-        # start the detector
-        self._output_file = raw_output_file_location
         self._event_dict = copy.deepcopy(self._example_event_dict)
         self._event_dict_confirmed = copy.deepcopy(self._example_event_dict)
         self._event_dict_confirmed.pop('SubSeconds')
@@ -108,13 +106,14 @@ class CosmicPi_V15(detector, threading.Thread):
         self.serial_port = serial_port
         self.baud_rate = baud_rate
         self.timeout = timeout
-
+        # setup the writing onto disk
+        self._ouput_file_handler = 0
+        if raw_output_file_location is not 'none':
+            self._ouput_file_handler = open(raw_output_file_location, 'w')
+            # empty the output file
+            self._ouput_file_handler.write(" ")
 
     def initzilize_detector(self):
-        # empty the output file on init
-        if self._output_file is not '':
-            with open(self._output_file, 'w') as f:
-                f.write(" ")
         connected = False
         while connected == False:
             try:
@@ -147,21 +146,21 @@ class CosmicPi_V15(detector, threading.Thread):
 
             # when there is an event store it
             if event_bool:
-                print("DEBUG: Sending event")
+                print("DEBUG: Sending event, with unix timestamp: " + str(self._event_dict['UTCUnixTime']))
                 self._commit_event_dict(self._event_dict)
 
     def _read_parse_and_check_for_event(self):
         # read a line and directly store it in the raw data
         try:
             line = self.ser.readline()
+            #print("DEBUG: Waiting serial input bytes: " + str(self.ser.inWaiting()))
         except SerialException as e:
             print("ERROR: Somebody unplugged the damn cable! SerialException:")
             print(e)
             raise RuntimeError("The detector can not function without a serial connection.")
         line_str = str(line)
-        if self._output_file is not '':
-            with open(self._output_file, 'a') as f:
-                f.write(line_str+"\n")
+        if not (self._ouput_file_handler == 0):
+            self._ouput_file_handler.write(line_str)
 
         # parsing
         try:
@@ -187,7 +186,8 @@ class CosmicPi_V15(detector, threading.Thread):
                 if (len(gps_lock_sting) == 1):
                     self._gps_ok = bool(int(gps_lock_sting))
                     # increment the time as well (with that we should be on the safe side of having events at the right time
-                    self._event_dict['UTCUnixTime'] += 1;
+                    self._event_dict['UTCUnixTime'] += 1
+                return False
 
             # check for GPS stings
             gps_type = line_str.split(',')[0]
@@ -261,7 +261,7 @@ class CosmicPi_V15(detector, threading.Thread):
                 sub_sec_string = line_str.split(':')[2]
                 sub_sec_string = sub_sec_string.split(';')[0]
                 # currently we are getting micros() here
-                # so divide them by
+                # so divide them by 1000000.0
                 current_subSeconds = float(sub_sec_string) / 1000000.0
                 # make sure we are actually seeing something new
                 if (self._event_dict['SubSeconds'] == current_subSeconds):
