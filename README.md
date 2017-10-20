@@ -11,9 +11,9 @@ More instructions will follow when the software has reached the state of the V2 
 
 ## Needed features to match up with the Version 2 mock-up software
 *   Read data from the detector into the SQLite database    [DONE]
-*   Display basic information in the Web-UI                 [In development]
-*   Start application on boot                               [Not yet started]
-*   Start hotspot on boot                                   [Not yet started]
+*   Display basic information in the Web-UI                 [DONE]
+*   Start application on boot                               [In development]
+*   Start hotspot on boot                                   [In development]
 *   Connect to a different WiFi via the webinterface        [Not yet started]
 *   Working install procedure                               [Not yet started]
 *   SystemD services for all components                     [Not yet started]
@@ -21,7 +21,9 @@ More instructions will follow when the software has reached the state of the V2 
     *   WebUI
     *   Hotspot
     *   Database maintainance
-
+* Interface for getting the raw data and database dumps     [Not yet started]
+* Interface to create custom plots                          [DONE]
+* Include about page                                        [Not yet started]
 
 ## Installation
 Clone this repository to the home folder of your CosmicPi (e.g. `/home/pi`)

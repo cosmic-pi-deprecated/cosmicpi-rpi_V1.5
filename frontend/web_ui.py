@@ -86,11 +86,8 @@ def dashboard():
         # fill in values
         if f_name in icon_dict.keys():
             values_to_display.append({'name':f_name, 'value':latest_datapoint[i], 'icon':icon_dict[f_name]})
-        # fill in location
-        if f_name in location_vars.keys():
-            location_vars[f_name] = latest_datapoint[i]
 
-    return render_template('dashboard.html', values_to_display=values_to_display, location_vars=location_vars)
+    return render_template('dashboard.html', values_to_display=values_to_display)
 
 
 @app.route('/plotting/', methods=['GET', 'POST'])
