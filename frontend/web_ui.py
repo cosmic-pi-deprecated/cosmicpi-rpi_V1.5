@@ -64,7 +64,7 @@ icon_dict = {
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/dashboard/', methods=['GET', 'POST'])
-def dashboard():
+def dashboard_page():
     values_to_display =[{'name':'Hardware Serial', 'value':getserial(), 'icon':'fa fa-microchip fa-5x'}]
 
     # get the latest datapoint
@@ -91,7 +91,7 @@ def dashboard():
 
 
 @app.route('/plotting/', methods=['GET', 'POST'])
-def plotting():
+def plotting_page():
     location_vars = {'Latitude': 0, 'Longitude': 0}
 
     # get the latest datapoint
@@ -117,6 +117,11 @@ def plotting():
 
 
     return render_template('plotting.html', location_vars=location_vars)
+
+
+@app.route('/about/', methods=['GET', 'POST'])
+def about_page():
+    return render_template('about.html')
 
 
 @app.route('/histogram.png')
