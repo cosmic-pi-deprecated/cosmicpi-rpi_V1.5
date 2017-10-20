@@ -1,0 +1,22 @@
+{% extends "cosmic_base.html" %}
+{% block title %}Custom Plotting{% endblock %}
+{% block head_additions %}
+    {{"decoupled-map"|googlemap_js(location_vars['Latitude'], location_vars['Longitude'], markers=[( location_vars['Latitude'], location_vars['Longitude'] )])}}
+
+{% endblock %}
+{% block content %}
+	<h1>Custom Plotting</h1>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Location
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div ref="location" style="width: 300px; height: 300px">{{"decoupled-map"|googlemap_html(location_vars['Latitude'], location_vars['Longitude']) }}</div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

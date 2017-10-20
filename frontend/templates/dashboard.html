@@ -1,36 +1,33 @@
 {% extends "cosmic_base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block head_additions %}
+    <script>
+    var reloading;
 
-<script>
-
-var reloading;
-
-function checkReloading() {
-    if (window.location.hash=="#autoreload") {
-        reloading=setTimeout("window.location.reload();", 5000);
-        document.getElementById("reloadCB").checked=true;
+    function checkReloading() {
+        if (window.location.hash=="#autoreload") {
+            reloading=setTimeout("window.location.reload();", 5000);
+            document.getElementById("reloadCB").checked=true;
+        }
     }
-}
 
-function toggleAutoRefresh(cb) {
-    if (cb.checked) {
-        window.location.replace("#autoreload");
-        reloading=setTimeout("window.location.reload();", 5000);
-    } else {
-        window.location.replace("#");
-        clearTimeout(reloading);
+    function toggleAutoRefresh(cb) {
+        if (cb.checked) {
+            window.location.replace("#autoreload");
+            reloading=setTimeout("window.location.reload();", 5000);
+        } else {
+            window.location.replace("#");
+            clearTimeout(reloading);
+        }
     }
-}
 
-window.onload=checkReloading;
-
-</script>
+    window.onload=checkReloading;
+    </script>
 {% endblock %}
 {% block content %}
 	<h1>Dashboard</h1>
 
-    <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto Refresh dashboard every 5 seconds
+    <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto refresh dashboard every 5 seconds
 
     <div class="col-lg-6">
         <div class="panel panel-default">
@@ -42,7 +39,6 @@ window.onload=checkReloading;
             </div>
         </div>
     </div>
-
 
     {% for value in values_to_display %}
     <div class="col-lg-4 col-md-6">
@@ -61,6 +57,7 @@ window.onload=checkReloading;
         </div>
     </div>
     {% endfor %}
+
 
 
 {% endblock %}

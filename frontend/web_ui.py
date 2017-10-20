@@ -6,6 +6,7 @@ import c3pyo as c3
 import sqlite3
 import numpy as np
 import matplotlib.dates as mdates
+from flask_googlemaps import GoogleMaps
 
 app = Flask(__name__)
 
@@ -65,6 +66,7 @@ icon_dict = {
 @app.route('/dashboard/', methods=['GET', 'POST'])
 def dashboard():
     values_to_display =[{'name':'Hardware Serial', 'value':getserial(), 'icon':'fa fa-microchip fa-5x'}]
+
     # get the latest datapoint
     conn = sqlite3.connect(sqlite_location)
     cursor = conn.cursor()
@@ -73,16 +75,51 @@ def dashboard():
     # get collumn names
     cursor.execute("PRAGMA table_info(Events);")
     col_names = cursor.fetchall()
-    print latest_datapoint
-    print col_names
 
+    # extract data
     for i in range(0,len(col_names)):
         # skip the subseconds
         if i == 1:
             continue;
-        values_to_display.append({'name':col_names[i][1], 'value':latest_datapoint[i], 'icon':icon_dict[col_names[i][1]]})
+        # field name
+        f_name = col_names[i][1]
+        # fill in values
+        if f_name in icon_dict.keys():
+            values_to_display.append({'name':f_name, 'value':latest_datapoint[i], 'icon':icon_dict[f_name]})
+        # fill in location
+        if f_name in location_vars.keys():
+            location_vars[f_name] = latest_datapoint[i]
 
-    return render_template('dashboard.html', values_to_display=values_to_display)
+    return render_template('dashboard.html', values_to_display=values_to_display, location_vars=location_vars)
+
+
+@app.route('/plotting/', methods=['GET', 'POST'])
+def plotting():
+    location_vars = {'Latitude': 0, 'Longitude': 0}
+
+    # get the latest datapoint
+    conn = sqlite3.connect(sqlite_location)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
+    latest_datapoint = cursor.fetchone()
+    # get collumn names
+    cursor.execute("PRAGMA table_info(Events);")
+    col_names = cursor.fetchall()
+
+    # extract data
+    for i in range(0,len(col_names)):
+        # skip the subseconds
+        if i == 1:
+            continue;
+        # field name
+        f_name = col_names[i][1]
+        # fill in location
+        if f_name in location_vars.keys():
+            location_vars[f_name] = latest_datapoint[i]
+
+
+
+    return render_template('plotting.html', location_vars=location_vars)
 
 
 @app.route('/histogram.png')
@@ -157,5 +194,7 @@ def build_plot():
 
 
 if __name__ == '__main__':
+    # do necessary inits
     initDB()
+    GoogleMaps(app, key="AIzaSyD_RgwMc6X6LpkAmskk4fWmafNFXtlB7_s")
     app.run()
