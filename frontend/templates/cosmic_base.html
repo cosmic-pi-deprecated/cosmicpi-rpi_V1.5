@@ -13,7 +13,10 @@
 	<link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet">
 	<link href="{{ url_for('static',filename='css/cosmicpi.css') }}" rel="stylesheet">
 	<link href="{{ url_for('static',filename='css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
-	{% block head_additions %}{% endblock %}
+
+    <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+
+    {% block head_additions %}{% endblock %}
 </head>
 
 <body>

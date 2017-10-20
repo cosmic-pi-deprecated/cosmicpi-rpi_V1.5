@@ -1,9 +1,40 @@
 {% extends "cosmic_base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block head_additions %}
+
 {% endblock %}
 {% block content %}
-	<h1>Index</h1>
-    <img id="img" src="/histogram.png?start_time=-120&end_time=9000000000&bin_size_seconds=1"/>
+	<h1>Dashboard</h1>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <img id="img" src="/histogram.png?start_time=-120&end_time=9000000000&bin_size_seconds=1"/>
+            </div>
+        </div>
+    </div>
+
+
+    {% for value in values_to_display %}
+    <div class="col-lg-4 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="{{ value['icon'] }}"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" style="font-size: 24px">{{ value['value'] }}</div>
+                        <div>{{ value['name'] }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
 
 {% endblock %}

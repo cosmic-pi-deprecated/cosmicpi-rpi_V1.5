@@ -27,10 +27,62 @@ def base():
         'cosmic_base.html', **locals())
 
 
+@app.route("/hw_serial.txt")
+def getserial():
+    # Extract serial from cpuinfo file
+    cpuserial = "0000000000000000"
+    try:
+        f = open('/proc/cpuinfo','r')
+        for line in f:
+            if line[0:6]=='Serial':
+                cpuserial = line[10:26]
+        f.close()
+    except:
+        cpuserial = "ERROR000000000"
+
+    return cpuserial
+
+
+
+icon_dict = {
+            'UTCUnixTime': "fa fa-clock-o fa-5x",
+            'TempreatureC': "fa fa-thermometer-half fa-5x",
+            'Humidity': "fa fa-tint fa-5x",
+            'AccelX': "fa fa-tachometer fa-5x",
+            'AccelY': "fa fa-tachometer fa-5x",
+            'AccelZ': "fa fa-tachometer fa-5x",
+            'MagX': "fa fa-compass fa-5x",
+            'MagY': "fa fa-compass fa-5x",
+            'MagZ': "fa fa-compass fa-5x",
+            'Pressure': "fa fa-thermometer-half fa-5x",
+            'Longitude': "fa fa-map-marker fa-5x",
+            'Latitude': "fa fa-map-marker fa-5x",
+            'DetectorName': "fa fa-info-circle fa-5x",
+            'DetectorVersion': "fa fa-info-circle fa-5x",
+}
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/dashboard/', methods=['GET', 'POST'])
 def dashboard():
-    return render_template('dashboard.html', chart_json=0)
+    values_to_display =[{'name':'Hardware Serial', 'value':getserial(), 'icon':'fa fa-microchip fa-5x'}]
+    # get the latest datapoint
+    conn = sqlite3.connect(sqlite_location)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
+    latest_datapoint = cursor.fetchone()
+    # get collumn names
+    cursor.execute("PRAGMA table_info(Events);")
+    col_names = cursor.fetchall()
+    print latest_datapoint
+    print col_names
+
+    for i in range(0,len(col_names)):
+        # skip the subseconds
+        if i == 1:
+            continue;
+        values_to_display.append({'name':col_names[i][1], 'value':latest_datapoint[i], 'icon':icon_dict[col_names[i][1]]})
+
+    return render_template('dashboard.html', values_to_display=values_to_display)
 
 
 @app.route('/histogram.png')
