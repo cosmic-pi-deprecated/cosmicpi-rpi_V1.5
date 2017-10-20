@@ -2,9 +2,35 @@
 {% block title %}Dashboard{% endblock %}
 {% block head_additions %}
 
+<script>
+
+var reloading;
+
+function checkReloading() {
+    if (window.location.hash=="#autoreload") {
+        reloading=setTimeout("window.location.reload();", 5000);
+        document.getElementById("reloadCB").checked=true;
+    }
+}
+
+function toggleAutoRefresh(cb) {
+    if (cb.checked) {
+        window.location.replace("#autoreload");
+        reloading=setTimeout("window.location.reload();", 5000);
+    } else {
+        window.location.replace("#");
+        clearTimeout(reloading);
+    }
+}
+
+window.onload=checkReloading;
+
+</script>
 {% endblock %}
 {% block content %}
 	<h1>Dashboard</h1>
+
+    <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto Refresh dashboard every 5 seconds
 
     <div class="col-lg-6">
         <div class="panel panel-default">
