@@ -1,0 +1,17 @@
+{% extends "cosmic_base.html" %}
+{% block title %}About CosmicPi{% endblock %}
+{% block head_additions %}
+
+{% endblock %}
+{% block content %}
+	<div style="max-width: 600px; margin: auto; padding: 8px; text-align: center;">
+		<p><img src="{{ url_for('static',filename='images/device.jpg') }}" style="width: 100%" /></p>
+
+		<p>
+            The Cosmic Pi project aims to build the world's
+            largest open source distributed cosmic ray telescope.
+            You too can be a part of the project, by becoming a Cosmic Pixel!
+        </p>
+    </div>
+
+{% endblock %}
