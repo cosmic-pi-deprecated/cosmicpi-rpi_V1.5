@@ -20,6 +20,9 @@ import datetime
 from serial import SerialException
 import configparser
 
+import logging as log
+log.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log.INFO)
+
 
 class detector():
     # vars that are the same for all detectors
@@ -53,7 +56,7 @@ class detector():
         self._detector_initilized = False
 
     def _initilize_DB(self):
-        self._db_conn = sqlite3.connect(self._sqlite_location)
+        self._db_conn = sqlite3.connect(self._sqlite_location, timeout=15.0)
         cursor = self._db_conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Events'")
         if cursor.fetchone() == None:
@@ -120,8 +123,8 @@ class CosmicPi_V15(detector, threading.Thread):
             try:
                 self.ser = serial.Serial(self.serial_port, self.baud_rate, timeout=self.timeout)
             except SerialException as e:
-                print("ERROR: Could not establish a serial connection! Retrying in a bit.")
-                print(e)
+                log.error("Could not establish a serial connection! Retrying in 10 seconds. Printing exception:")
+                log.error(e)
                 time.sleep(10)
                 continue;
             connected = True
@@ -142,22 +145,22 @@ class CosmicPi_V15(detector, threading.Thread):
         while True:
             event_bool = False
             # read lines from serial and parse them
-            #print("DEBUG: Reading line")
+            #log.debug("Reading line")
             event_bool = self._read_parse_and_check_for_event()
 
             # when there is an event store it
             if event_bool:
-                print("DEBUG: Sending event, with unix timestamp: " + str(self._event_dict['UTCUnixTime']))
+                log.info("Submitting event, with unix timestamp: " + str(self._event_dict['UTCUnixTime']))
                 self._commit_event_dict(self._event_dict)
 
     def _read_parse_and_check_for_event(self):
         # read a line and directly store it in the raw data
         try:
             line = self.ser.readline()
-            #print("DEBUG: Waiting serial input bytes: " + str(self.ser.inWaiting()))
+            #log.debug("Waiting serial input bytes: " + str(self.ser.inWaiting()))
         except SerialException as e:
-            print("ERROR: Somebody unplugged the damn cable! SerialException:")
-            print(e)
+            log.critical("Received a SerialException while reading the serial port (somebody probably unplugged the damn cable!). Printing error:")
+            log.critical(e)
             raise RuntimeError("The detector can not function without a serial connection.")
         line_str = str(line)
         if self.enable_raw_output is True:
@@ -272,10 +275,10 @@ class CosmicPi_V15(detector, threading.Thread):
                     return True
             return False
         except IndexError as e:
-            print("WARNING: Error while accessing the result of splitting a the following line:" + str(line_str))
+            log.warning("Omitting a line, due to: Error while accessing the result of splitting the following line:" + str(line_str))
             return False
         except ValueError as e:
-            print("WARNING: Error while converting a number from the following line: " + str(line_str))
+            log.warning("Omitting a line, due to: Error while converting a number from the following line: " + str(line_str))
             return False
 
 #det = detector("Test1", "TestVersion1", config_sqlite_location)
@@ -301,10 +304,10 @@ if detector_class == "CosmicPi_V15":
     enable_raw_output = config.getboolean(detector_class, "enable_raw_output")
     det = CosmicPi_V15(serial_port, baud_rate, sqlite_location, enable_raw_output=enable_raw_output)
 if det == 0:
-    print("ERROR: Could not find the detector class: " + str(detector_class))
+    log.critical("Could not find the detector class: " + str(detector_class))
 
 # start the detector
-print("INFO: Detector init")
+log.info("Detector init")
 det.initzilize_detector()
-print("INFO: Starting detector")
+log.info("Starting detector")
 det.start()
