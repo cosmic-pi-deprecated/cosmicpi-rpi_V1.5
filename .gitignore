@@ -1,3 +1,4 @@
 .idea/
 storage/sqlite_db
 backend/1-5_raw_output.log
+*.log
