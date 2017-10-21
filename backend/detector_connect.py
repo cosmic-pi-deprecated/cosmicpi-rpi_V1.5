@@ -56,7 +56,7 @@ class detector():
         self._detector_initilized = False
 
     def _initilize_DB(self):
-        self._db_conn = sqlite3.connect(self._sqlite_location, timeout=15.0)
+        self._db_conn = sqlite3.connect(self._sqlite_location, timeout=60.0)
         cursor = self._db_conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Events'")
         if cursor.fetchone() == None:
@@ -157,7 +157,7 @@ class CosmicPi_V15(detector, threading.Thread):
         # read a line and directly store it in the raw data
         try:
             line = self.ser.readline()
-            #log.debug("Waiting serial input bytes: " + str(self.ser.inWaiting()))
+            log.debug("Waiting serial input bytes: " + str(self.ser.inWaiting()))
         except SerialException as e:
             log.critical("Received a SerialException while reading the serial port (somebody probably unplugged the damn cable!). Printing error:")
             log.critical(e)
