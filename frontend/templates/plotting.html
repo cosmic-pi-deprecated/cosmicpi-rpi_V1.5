@@ -29,11 +29,11 @@
             <div class="panel-body">
                     <form action="/histogram.png" target="_blank">
                           Start time of the plot in UTCUnixSeconds (negative seconds will mean "seconds before last measurement"):<br>
-                          <input type="text" name="start_time" value="-120"><br>
+                          <input type="text" name="start_time" value="-300"><br>
                           End time of the plot in UTCUnixSeconds(the plot will not extend further than the available data):<br>
                           <input type="text" name="end_time" value="9000000000"><br>
                           The bin size for the histogram (note too many bins will slow down the histogram creation):<br>
-                          <input type="text" name="bin_size_seconds" value="2"><br><br>
+                          <input type="text" name="bin_size_seconds" value="10"><br><br>
                          <input type="submit" value="Create plot">
                     </form>
             </div>
