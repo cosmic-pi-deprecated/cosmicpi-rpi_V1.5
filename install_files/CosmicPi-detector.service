@@ -1,0 +1,9 @@
+[Unit]
+Description=Software for connecting to the the CosmicPi detector
+
+[Service]
+ExecStart=/usr/bin/python PATH_TO_EXACUTABE/backend/detector_connect.py
+WorkingDirectory=PATH_TO_EXACUTABE/backend/
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Software for the CosmicPi UI
+
+[Service]
+ExecStart=FLASK_APP=web_ui.py /usr/bin/python -m flask run --host=0.0.0.0 --port=80
+WorkingDirectory=PATH_TO_EXACUTABE/frontend/
+
+[Install]
+WantedBy=multi-user.target
