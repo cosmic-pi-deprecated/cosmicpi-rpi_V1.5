@@ -1,5 +1,21 @@
 #!/bin/bash
 
+echo "--- Installing needed python packages via pip"
+pip install pyserial
+echo "we need some more stuff here"
+
+echo "--- Installing create_ap via git"
+git clone https://github.com/oblique/create_ap --depth 1
+cd create_ap
+sudo make install
+cd ..
+sudo rm -rf create_ap
+
+
+echo "--- Setting up systemd services"
+sudo cp -f install_files/CosmicPi.service /etc/systemd/system/
+echo "we need some more stuff here as well"
+sudo systemctl daemon-reload
 
 echo "--- Finished setup!"
 

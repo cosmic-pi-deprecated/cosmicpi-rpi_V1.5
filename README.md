@@ -28,8 +28,10 @@ More instructions will follow when the software has reached the state of the V2 
 
 ## Proposed future features
 * Enforce read only access for the UI
+* Setup proper logging mechanisms for all parts of the software
 * Create additional ways to work with the data, focused on the needs of teachers in schools
 * Database maintainance: Look at ways to aggregate the data, to avoid bloating of the database
+* Do the installation in a proper way, as example setuptools
 
 ## Installation
 Clone this repository to the home folder of your CosmicPi (e.g. `/home/pi`)
