@@ -1,7 +1,22 @@
 #!/bin/bash
 
+echo "--- Getting executable path"
+EXECPATH="`dirname \"$0\"`"              # relative
+EXECPATH="`( cd \"$EXECPATH\" && pwd )`"  # absolutized and normalized
+if [ -z "$EXECPATH" ] ; then
+  # error; for some reason, the path is not accessible
+  # to the script (e.g. permissions re-evaled after suid)
+  exit 1  # fail
+fi
+echo "$EXECPATH"
+TOREPLACE="PATH_TO_EXECUTABLE"
+
+
+echo "--- Installing needed packages via apt"
+sudo apt install git python-pip
+
 echo "--- Installing needed python packages via pip"
-pip install pyserial
+pip install pyserial configparser numpy matplotlib flask flask_googlemaps
 echo "we need some more stuff here"
 
 echo "--- Installing create_ap via git"
@@ -13,8 +28,9 @@ sudo rm -rf create_ap
 
 
 echo "--- Setting up systemd services"
-sudo cp -f install_files/CosmicPi.service /etc/systemd/system/
-echo "we need some more stuff here as well"
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-detector.service
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-UI.service
+sudo cp -f install_files/*.service /etc/systemd/system/
 sudo systemctl daemon-reload
 
 echo "--- Finished setup!"
