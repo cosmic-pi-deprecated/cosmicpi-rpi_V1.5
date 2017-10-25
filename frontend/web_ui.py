@@ -1,10 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, make_response
 import matplotlib.pyplot as plt
 import io
-import base64
-import c3pyo as c3
 import sqlite3
-import numpy as np
 import matplotlib.dates as mdates
 from flask_googlemaps import GoogleMaps
 
