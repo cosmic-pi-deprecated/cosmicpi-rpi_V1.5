@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 sqlite_location = "../storage/sqlite_db"
 def initDB():
-    conn = sqlite3.connect(sqlite_location)
+    conn = sqlite3.connect(sqlite_location, timeout=60.0)
     cursor = conn.cursor()
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Events'")
     if cursor.fetchone() == None:
@@ -65,7 +65,7 @@ def dashboard_page():
     values_to_display =[{'name':'Hardware Serial', 'value':getserial(), 'icon':'fa fa-microchip fa-5x'}]
 
     # get the latest datapoint
-    conn = sqlite3.connect(sqlite_location)
+    conn = sqlite3.connect(sqlite_location, timeout=60.0)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
     latest_datapoint = cursor.fetchone()
@@ -92,7 +92,7 @@ def plotting_page():
     location_vars = {'Latitude': 0, 'Longitude': 0}
 
     # get the latest datapoint
-    conn = sqlite3.connect(sqlite_location)
+    conn = sqlite3.connect(sqlite_location, timeout=60.0)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
     latest_datapoint = cursor.fetchone()
@@ -131,7 +131,7 @@ def build_plot():
 
     # get some data
     data = []
-    conn = sqlite3.connect(sqlite_location)
+    conn = sqlite3.connect(sqlite_location, timeout=60.0)
     cursor = conn.cursor()
     # only get the last n seconds if the start time was negative
     if start_time < 0:
