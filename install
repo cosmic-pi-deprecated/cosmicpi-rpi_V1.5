@@ -12,11 +12,15 @@ echo "$EXECPATH"
 TOREPLACE="PATH_TO_EXECUTABLE"
 
 
-echo "--- Installing needed packages via apt"
-sudo apt install git python-pip
+echo "--- Updating packages"
+sudo apt --yes update
+sudo apt --yes upgrade
 
-echo "--- Installing needed python packages via pip"
-pip install pyserial configparser numpy matplotlib flask flask_googlemaps
+echo "--- Installing packages via apt"
+sudo apt --yes install git python-pip htop
+
+echo "--- Installing python packages via pip"
+sudo pip install pyserial configparser numpy matplotlib flask flask_googlemaps
 echo "we need some more stuff here"
 
 echo "--- Installing create_ap via git"

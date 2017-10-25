@@ -4,6 +4,7 @@ Description=Software for connecting to the the CosmicPi detector
 [Service]
 ExecStart=/usr/bin/python PATH_TO_EXECUTABLE/backend/detector_connect.py
 WorkingDirectory=PATH_TO_EXECUTABLE/backend/
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
