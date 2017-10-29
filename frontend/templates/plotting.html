@@ -1,7 +1,8 @@
 {% extends "cosmic_base.html" %}
 {% block title %}Custom Plotting{% endblock %}
 {% block head_additions %}
-    {{"decoupled-map"|googlemap_js(location_vars['Latitude'], location_vars['Longitude'], markers=[( location_vars['Latitude'], location_vars['Longitude'] )])}}
+    {# The flask_googlemaps package does not work if installed via "sudo pip ...", we should figure out how to fix this #}
+    {# {{"decoupled-map"|googlemap_js(location_vars['Latitude'], location_vars['Longitude'], markers=[( location_vars['Latitude'], location_vars['Longitude'] )])}}
 
 {% endblock %}
 {% block content %}
@@ -14,7 +15,7 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                {{"decoupled-map"|googlemap_html(location_vars['Latitude'], location_vars['Longitude']) }}
+                {# {{"decoupled-map"|googlemap_html(location_vars['Latitude'], location_vars['Longitude']) }}
             </div>
         </div>
     </div>
