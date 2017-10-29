@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from flask import Flask, flash, redirect, render_template, request, make_response
 import matplotlib.pyplot as plt
 import io
