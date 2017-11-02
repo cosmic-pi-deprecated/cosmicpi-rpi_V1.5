@@ -5,9 +5,9 @@ The central point is a SQLite database into which data is stored, as well as rea
 More instructions will follow when the software has reached the state of the V2 mock-up software.
 
 #### If you encounter any problems
-1   Consult the manual if available to you
-2   Consult the [CosmicPi blog](http://cosmicpi.org/posts) (maybe the issue is very common and we have posted a solution for you)
-3   Submit an issue here on github via the *Issues* tab, make sure to include the following:
+1.   Consult the manual if available to you
+2.   Consult the [CosmicPi blog](http://cosmicpi.org/posts) (maybe the issue is very common and we have posted a solution for you)
+3.   Submit an issue here on github via the *Issues* tab, make sure to include the following:
     *   What you are expecting to get from the detector/software
     *   What you are currently getting from the detector/software
     *   The version of the software that you are running
@@ -56,13 +56,13 @@ In case something fails, please submit an issue with the output you got. Thanks!
 The software is normally controlled via SystemD.
 *Optional:* Reboot to automatically start the software as a SystemD service.
 
-**Start or stop the detector connector** as a service with: `sudo systemctl start CosmicPi-detector` or `sudo systemctl stop CosmicPi-detector`
+**Start or stop the detector connector:** `sudo systemctl start CosmicPi-detector` or `sudo systemctl stop CosmicPi-detector`
 
-**Start or stop the WebUI** as a service with: `sudo systemctl start CosmicPi-UI` or `sudo systemctl stop CosmicPi-UI`
+**Start or stop the WebUI:** `sudo systemctl start CosmicPi-UI` or `sudo systemctl stop CosmicPi-UI`
 
-**Start or stop the Hotspot** as a service with: `sudo systemctl start create_ap` or `sudo systemctl stop create_ap`
+**Start or stop the Hotspot:** `sudo systemctl start create_ap` or `sudo systemctl stop create_ap`
 
-**View the log output** of either program with: `sudo systemctl status CosmicPi-detector` or `sudo systemctl status CosmicPi-UI` or `sudo systemctl status create_ap`
+**View the log output:** `sudo systemctl status CosmicPi-detector` or `sudo systemctl status CosmicPi-UI` or `sudo systemctl status create_ap`
 
 From the raspberry pi itself the application is available at:
 
@@ -72,7 +72,7 @@ When used as an access point the application is available at:
 
 `http://cosmicpi.local/` or `http://192.168.12.1/`
 
-#### Debugging the software
+#### Debugging the software:
 Stop all mentioned services. After this you should be able to run the software directly via the commandline.
 
 ## Proposed future features
