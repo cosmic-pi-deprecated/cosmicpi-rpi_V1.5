@@ -4,15 +4,15 @@ This software runs on the raspberry pi, which is integral to the CosmicPi V1.5.
 The central point is a SQLite database into which data is stored, as well as read from.
 More instructions will follow when the software has reached the state of the V2 mock-up software.
 
-#### If you encounter any problems
-1.   Consult the manual if available to you
-2.   Consult the [CosmicPi blog](http://cosmicpi.org/posts) (maybe the issue is very common and we have posted a solution for you)
-3.   Submit an issue here on github via the *Issues* tab, make sure to include the following:
-    *   What you are expecting to get from the detector/software
-    *   What you are currently getting from the detector/software
-    *   The version of the software that you are running
-    *   Any log output available to you (the more the better)
-    *   Any and all clues that you have on what might be going wrong
+#### If you encounter any problems, please follow these steps:
+1. Consult the manual, if available to you
+2. Consult the [CosmicPi blog](http://cosmicpi.org/posts) (maybe the issue is very common and we have posted a solution for you)
+3. Submit an issue here on github via the *Issues* tab, make sure to include the following:
+   * What you are expecting to get from the detector/software
+   * What you are currently getting from the detector/software
+   * The version of the software that you are running
+   * Any log output available to you (the more the better)
+   * Any and all clues that you have on what might be going wrong
 
 ## Current features
 *   All that is checked off in the next section

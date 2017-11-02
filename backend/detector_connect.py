@@ -189,7 +189,7 @@ class CosmicPi_V15(detector, threading.Thread):
                 # sanity check
                 if (len(gps_lock_sting) == 1):
                     self._gps_ok = bool(int(gps_lock_sting))
-                    # increment the time as well (with that we should be on the safe side of having events at the right time
+                    # increment the time as well (with that we should be on the safe side of having events at the right time)
                     self._event_dict['UTCUnixTime'] += 1
                 return False
 
