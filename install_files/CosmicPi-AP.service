@@ -1,9 +1,0 @@
-[Unit]
-Description=Start an AP for the CosmicPi
-
-[Service]
-ExecStart=/usr/bin/create_ap wlan0 eth0 CosmicPi
-
-
-[Install]
-WantedBy=multi-user.target
