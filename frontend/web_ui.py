@@ -7,13 +7,34 @@ import sqlite3
 import matplotlib.dates as mdates
 from flask_googlemaps import GoogleMaps
 import csv
+from flask_basicauth import BasicAuth
+import configparser
 
+
+# read settings
+CONFIG_FILE = "../config/CosmicPi.config"
+# read configuration
+# Todo: Put the config parser into a propper class
+# Todo: Implement proper error catching for configparser (e.g. non existent keys or file)
+# read configuration
+config = configparser.ConfigParser()
+config.read(CONFIG_FILE)
+SQLITE_LOCATION = config.get("Storage", "sqlite_location")
+UI_USER = config.get("UI", "username")
+UI_PASS = config.get("UI", "password")
+print(UI_USER, UI_PASS)
+
+
+# start flask
 app = Flask(__name__)
+app.config['BASIC_AUTH_USERNAME'] = UI_USER
+app.config['BASIC_AUTH_PASSWORD'] = UI_PASS
 
-sqlite_location = "../storage/sqlite_db"
+basic_auth = BasicAuth(app)
+
 
 def initDB():
-    conn = sqlite3.connect(sqlite_location, timeout=60.0)
+    conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
     cursor = conn.cursor()
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Events'")
     if cursor.fetchone() == None:
@@ -69,7 +90,7 @@ def dashboard_page():
     values_to_display =[{'name':'Hardware Serial', 'value':getserial(), 'icon':'fa fa-microchip fa-5x'}]
 
     # get the latest datapoint
-    conn = sqlite3.connect(sqlite_location, timeout=60.0)
+    conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
     latest_datapoint = cursor.fetchone()
@@ -97,7 +118,7 @@ def plotting_page():
     location_vars = {'Latitude': 0, 'Longitude': 0}
 
     # get the latest datapoint
-    conn = sqlite3.connect(sqlite_location, timeout=60.0)
+    conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
     latest_datapoint = cursor.fetchone()
@@ -122,13 +143,14 @@ def plotting_page():
     return render_template('plotting.html', location_vars=location_vars)
 
 @app.route('/settings/', methods=['GET', 'POST'])
+@basic_auth.required
 def settings_page():
     return render_template('settings.html')
 
 
 @app.route('/CosmicPi_data.csv', methods=['GET'])
 def csv_export():
-    conn = sqlite3.connect(sqlite_location, timeout=60.0)
+    conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
     cursor = conn.cursor()
 
     # get collumn names
@@ -169,7 +191,7 @@ def build_plot():
 
     # get some data
     data = []
-    conn = sqlite3.connect(sqlite_location, timeout=60.0)
+    conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
     cursor = conn.cursor()
     # only get the last n seconds if the start time was negative
     if start_time < 0:

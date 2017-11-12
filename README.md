@@ -32,6 +32,7 @@ This behaviour is very much open to discussion.
     - [x]   WebUI
     - [x]   Hotspot
 - [x] Interface for getting the raw data and database dumps
+- [x] Authentication for the settings page
 - [x] Interface to create custom plots
 - [x] Include about page
 - [ ] Add useful configurations to the config file
