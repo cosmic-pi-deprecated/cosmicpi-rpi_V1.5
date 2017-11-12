@@ -31,7 +31,7 @@ This behaviour is very much open to discussion.
     - [x]   Detector readout
     - [x]   WebUI
     - [x]   Hotspot
-- [ ] Interface for getting the raw data and database dumps
+- [x] Interface for getting the raw data and database dumps
 - [x] Interface to create custom plots
 - [x] Include about page
 - [ ] Add useful configurations to the config file

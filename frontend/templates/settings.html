@@ -1,0 +1,25 @@
+{% extends "cosmic_base.html" %}
+{% block title %}Settings{% endblock %}
+{% block head_additions %}
+{% endblock %}
+{% block content %}
+	<h1>Settings</h1>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                CSV export
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                Here you can export the latest events in CSV format. <br>
+                <form method="get" action="/CosmicPi_data.csv">
+                   <button type="submit">Download!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+{% endblock %}

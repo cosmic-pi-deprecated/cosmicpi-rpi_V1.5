@@ -6,10 +6,12 @@ import io
 import sqlite3
 import matplotlib.dates as mdates
 from flask_googlemaps import GoogleMaps
+import csv
 
 app = Flask(__name__)
 
 sqlite_location = "../storage/sqlite_db"
+
 def initDB():
     conn = sqlite3.connect(sqlite_location, timeout=60.0)
     cursor = conn.cursor()
@@ -74,6 +76,7 @@ def dashboard_page():
     # get collumn names
     cursor.execute("PRAGMA table_info(Events);")
     col_names = cursor.fetchall()
+    conn.close()
 
     # extract data
     for i in range(0,len(col_names)):
@@ -101,6 +104,7 @@ def plotting_page():
     # get collumn names
     cursor.execute("PRAGMA table_info(Events);")
     col_names = cursor.fetchall()
+    conn.close()
 
     # extract data
     for i in range(0,len(col_names)):
@@ -116,6 +120,38 @@ def plotting_page():
 
 
     return render_template('plotting.html', location_vars=location_vars)
+
+@app.route('/settings/', methods=['GET', 'POST'])
+def settings_page():
+    return render_template('settings.html')
+
+
+@app.route('/CosmicPi_data.csv', methods=['GET'])
+def csv_export():
+    conn = sqlite3.connect(sqlite_location, timeout=60.0)
+    cursor = conn.cursor()
+
+    # get collumn names
+    cursor.execute("PRAGMA table_info(Events);")
+    col_data = cursor.fetchall()
+    col_names = []
+    for i in range(0, len(col_data)):
+        col_names.append(col_data[i][1])
+
+    # get data from db
+    cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
+    data = cursor.fetchall()
+    conn.close()
+
+    # write CSV export to memory
+    output = io.BytesIO()
+    writer = csv.writer(output)
+    writer.writerow(col_names)
+    writer.writerows(data)
+
+    response = make_response(output.getvalue())
+    response.headers['Content-Type'] = 'text/csv'
+    return response
 
 
 @app.route('/about/', methods=['GET', 'POST'])
@@ -146,6 +182,7 @@ def build_plot():
     cursor.execute("SELECT * FROM Events WHERE UTCUnixTime BETWEEN ? AND ? ORDER BY UTCUnixTime DESC, SubSeconds DESC;",
                    (start_time, end_time))
     data = cursor.fetchall()
+    conn.close()
 
     # massage data
     if len(data) == 0:
