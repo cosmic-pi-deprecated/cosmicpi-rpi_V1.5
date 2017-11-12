@@ -29,11 +29,14 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                     <form action="/histogram.png" target="_blank">
-                          Start time of the plot in UTCUnixSeconds (negative seconds will mean "seconds before last measurement"):<br>
+                        The application uses Unix timestamps to save the time of events. Thus for creating a custom plot the application will want to know the start and end time of the plot as Unix timestamps.<br>
+                        To convert UTC time to a useful Unix timestamp, we recommend <a href="https://www.unixtimestamp.com/">this</a> website.
+                        <br><br>
+                          <b>Start time</b> of the plot in UTC UnixSeconds (negative seconds will mean "seconds before last measurement"):<br>
                           <input type="text" name="start_time" value="-300"><br>
-                          End time of the plot in UTCUnixSeconds(the plot will not extend further than the available data):<br>
+                          <b>End time</b> of the plot in UTC UnixSeconds(the plot will not extend further than the available data):<br>
                           <input type="text" name="end_time" value="9000000000"><br>
-                          The bin size for the histogram in seconds (note that too many bins will slow down the histogram creation):<br>
+                          <b>Bin size</b> for the histogram in seconds (note that too many bins will slow down the histogram creation):<br>
                           <input type="text" name="bin_size_seconds" value="10"><br><br>
                          <input type="submit" value="Create plot">
                     </form>
