@@ -22,7 +22,6 @@ config.read(CONFIG_FILE)
 SQLITE_LOCATION = config.get("Storage", "sqlite_location")
 UI_USER = config.get("UI", "username")
 UI_PASS = config.get("UI", "password")
-print(UI_USER, UI_PASS)
 
 
 # start flask
@@ -195,7 +194,7 @@ def build_plot():
     cursor = conn.cursor()
     # only get the last n seconds if the start time was negative
     if start_time < 0:
-        plot_title += "Histogram of events over the last " + str(-start_time/60) + " minutes\nbin size: "+str(bin_size_seconds)+" [s]"
+        plot_title += "Histogram of events over the last {0:.1f} minutes\nbin size: {1:d} [s]".format(-start_time/60., bin_size_seconds)
         cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
         start_time = cursor.fetchone()[0] + start_time
         end_time = 9000000000
@@ -214,7 +213,7 @@ def build_plot():
         event_time_list = [data[i][0] + data[i][1] for i in range(len(data))]
         #event_time_list = [data[i][0] for i in range(len(data))]
         bin_edges = range(int(event_time_list[len(event_time_list) - 1]), int(event_time_list[0]), bin_size_seconds)
-        x_axis_limits = (int(event_time_list[len(event_time_list) - 1]), int(event_time_list[0])+1)
+        x_axis_limits = (start_time, int(event_time_list[0])+1)
         # convert our unix timestamps to Matplotlib  format
         event_time_list = mdates.epoch2num(event_time_list)
         bin_edges = mdates.epoch2num(bin_edges)
@@ -224,7 +223,7 @@ def build_plot():
         plt.hist(event_time_list,bins=bin_edges)
         plt.title(plot_title)
         plt.xlabel("Time [UTC]")
-        plt.ylabel("Number of Events [1]")
+        plt.ylabel("Number of Events per {0:d} second [1]".format(bin_size_seconds))
 
         plt.subplots_adjust(bottom=0.2)
         plt.xticks(rotation=25)
