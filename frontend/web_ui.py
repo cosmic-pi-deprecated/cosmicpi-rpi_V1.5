@@ -9,6 +9,15 @@ from flask_googlemaps import GoogleMaps
 import csv
 from flask_basicauth import BasicAuth
 import configparser
+import subprocess
+import urllib2
+import time
+import thread
+import logging
+import re
+import smtplib
+from email.mime.text import MIMEText
+
 
 
 # read settings
@@ -22,7 +31,12 @@ config.read(CONFIG_FILE)
 SQLITE_LOCATION = config.get("Storage", "sqlite_location")
 UI_USER = config.get("UI", "username")
 UI_PASS = config.get("UI", "password")
-
+DEFAULT_WIFI_NAME = config.get("Default WiFi", "name")
+DEFAULT_WIFI_PASS = config.get("Default WiFi", "password")
+WPA_SUPPLICANT_LOCATION = str(config.get("MISC", "wpa_supplicant_location"))
+global_user_address = ''
+GMAIL_USER = "cosmicpidevice@gmail.com"
+GMAIL_PW = 'meineguete'
 
 # start flask
 app = Flask(__name__)
@@ -144,10 +158,205 @@ def plotting_page():
 @app.route('/settings/', methods=['GET', 'POST'])
 @basic_auth.required
 def settings_page():
-    return render_template('settings.html')
+    email = request.args.get('email')
+    global global_user_address
+    if not email == None:
+        global_user_address = email
+    current_WiFi, avail_WiFi = get_current_and_available_networks()
+    return render_template('settings.html', available_wifis=avail_WiFi, current_wifi=current_WiFi, current_email=global_user_address)
 
+def get_current_and_available_networks():
+    wifiNetworkList = ''
+    # Presently connected network
+    connectedNetworkNameResponse = ''
+    try:
+        connectedNetworkNameResponse = subprocess.check_output(['sudo','iwgetid'])
+    except subprocess.CalledProcessError as e:
+        print 'ERROR get connected network: '
+        print e
+    except WindowsError as e:
+        print("Well, windows just can't do this...")
+        connectedNetworkNameResponse = '"maybe a windows network?"'
+    connectedNetworkNameStr = re.findall('\"(.*?)\"', connectedNetworkNameResponse) #" Find the string between quotes
+    if len(connectedNetworkNameStr) < 1:
+        connectedNetworkNameStr = ''
+    else:
+        connectedNetworkNameStr =connectedNetworkNameStr[0]
+    wifiNetworkList = [connectedNetworkNameStr]
+    # Available networks
+    availableNetworksResponse = ''
+    try:
+        availableNetworksResponse = subprocess.check_output(['sudo','iw','dev','wlan0','scan'])
+    except subprocess.CalledProcessError as e:
+        print 'ERROR get list of networks: '
+        print e
+    except WindowsError as e:
+        print("Well, windows just can't do this either...")
+        availableNetworksResponse = 'SSID: Network A\nSSID: Network B\n'
+    availableNetworksLines = availableNetworksResponse.split('\n')
+    for availableNetworksLine in availableNetworksLines:
+        if 'SSID' in availableNetworksLine:
+            # Typical line:
+            #   SSID: elithion belkin
+            essid = availableNetworksLine.replace('SSID:','').strip()
+            wifiNetworkList.append(essid)
+    return connectedNetworkNameStr, wifiNetworkList
+
+@app.route('/connect_to_wifi', methods=['GET', 'POST'])
+@basic_auth.required
+def wifi_connector():
+    # get user set parameters
+    wifi_name = request.args.get('selected_wifi')
+    wifi_pw = request.args.get('password')
+
+    # check that the user has given a mail address
+    global global_user_address
+    if global_user_address == "":
+        return 'Please save an e-mail address before connecting to any other WiFi! <a href="/settings/">Go back to the settings page</a>'
+
+    # launch the wifi login in a different thread
+    # we need to to it like this, since otherwise the user would never recieve an answer...
+    thread.start_new_thread(connect_to_wifi, (wifi_name, wifi_pw))
+
+    msg = 'The CosmicPi will now try to connect to the WiFi "{}". '.format(wifi_name)
+    msg += "When the CosmicPi has connected to the internet you will receive an e-mail. "
+    msg += "If no internet connection is found or the connection was not sucessfull the CosmiPi will recreate the WiFi hotspot. Please wait at least two minutes."
+    return msg
+
+
+import socket
+import struct
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        import fcntl
+        result = socket.inet_ntoa(fcntl.ioctl(
+                                                s.fileno(),
+                                                0x8915,  # SIOCGIFADDR
+                                                struct.pack('256s', ifname[:15])
+                                            )[20:24])
+    except IOError:
+        print("Error getting the IP address, either you are not doing this on raspbian or the queried device does not exist.")
+        result = "some_ip"
+    except WindowsError:
+        print("Windows can not do such things, don't force it ^^")
+        result = "some_ip"
+    except ImportError:
+        print("This OS can not do such things, don't force it ^^")
+        result = "some_ip"
+    return  result
+
+
+def send_status_mail():
+    # prepare everything we need in advance
+    current_wifi = get_current_and_available_networks()[0]
+    listtatata = {'Currently connected network': current_wifi,
+                 'Current IP address': get_ip_address("wlan0"),
+                 'Serial number': getserial()
+                 }
+    content = "Hello there,\n\n"
+    content += 'Your CosmicPi has just connected to the network "{}". '.format(current_wifi)
+    content += "When your computer is connected to {}, you can reach the cosmic Pi via this address: http://{}/\n\n".format(current_wifi, listtatata['Current IP address'])
+    content += "Please do not answer to this e-mail, the address is only used by the CosmicPi devices and can not answer you.\n"
+    content += "If you have any questions or could use some help, do not hesitate to contact us at: contact@cosmicpi.org\n\n"
+    content += "All the best,\nYour CosmicPi-Team\n\n\n"
+    content += "Some information about your CosmicPi:\n"
+    for key in listtatata.keys():
+        content += "{}: {}\n".format(key, listtatata[key])
+
+    msg = MIMEText(content)
+    msg['Subject'] = 'Your CosmicPi has connected to the internet!'
+    msg['From'] = GMAIL_USER
+    msg['To'] = global_user_address
+
+    # connect to google
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.ehlo()
+    server.starttls()
+    # login
+    server.login(GMAIL_USER, GMAIL_PW)
+    # send the mail
+    try:
+        server.sendmail(msg['From'], msg['To'], msg.as_string())
+    except smtplib.SMTPRecipientsRefused:
+        print("The e-mail address was invalid! Falling back to AP mode, otherwise the CosmicPi is potentially lost!")
+        fall_back_to_ap()
+    # end contact
+    server.quit()
+
+
+def fall_back_to_ap():
+    # empty the wpa supplicant to it's default
+    wpa_supplicant_string = "country=GB\n"  # Todo: Check, that this string in front is still correct!
+    wpa_supplicant_string += "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
+    wpa_supplicant_string += "update_config=1\n"
+    wpa_supplicant_string += "\nnetwork={\n"
+    net = (DEFAULT_WIFI_NAME, DEFAULT_WIFI_PASS)
+    wpa_supplicant_string += '\tssid="{}"\n'.format(net[0])
+    # check if we need a password
+    if str(net[1]) == "":
+        wpa_supplicant_string += '\tpsk="{}"\n'.format(net[1])
+    wpa_supplicant_string += "}\n"
+    with open(WPA_SUPPLICANT_LOCATION, 'w') as file:
+        file.write(wpa_supplicant_string)
+    # restart the hotspot
+    try:
+        import fcntl
+        subprocess.call("systemctl start create_ap",
+                        shell=True)  # well, here we actually care if the hotspot starts, but oh well...
+    except ImportError:
+        print("This OS is not linux enough to handle a hotspot in this way")
+
+def connect_to_wifi(name, pw):
+    # build the string for the WPA supplicant
+    wpa_supplicant_string = "country=GB\n"    # Todo: Check, that this string in front is still correct!
+    wpa_supplicant_string += "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"
+    wpa_supplicant_string += "update_config=1\n"
+    networks = [(name, pw), (DEFAULT_WIFI_NAME, DEFAULT_WIFI_PASS)]
+    for net in networks:
+        wpa_supplicant_string += "\nnetwork={\n"
+        wpa_supplicant_string += '\tssid="{}"\n'.format(net[0])
+        # check if we need a password
+        if not str(net[1]) == "":
+            wpa_supplicant_string += '\tpsk="{}"\n'.format(net[1])
+        wpa_supplicant_string += "}\n"
+
+    # deactivate htospot
+    try:
+        import fcntl
+        subprocess.call("systemctl stop create_ap", shell=True)  # we very much don't care if this fails
+    except ImportError:
+        print("This OS is not linux enough to handle a hotspot in this way")
+    # write wpa_supplicant string to the file
+    with open(WPA_SUPPLICANT_LOCATION, 'w') as file:
+        file.write(wpa_supplicant_string)
+
+    # wait for an internet connection (max 2 min)
+    start_time = time.time()
+    have_internet = False
+    while (have_internet == False) and ((start_time + 120) >  time.time()):
+        have_internet = internet_on()
+
+    # if we have no internet, restart the hotspot, otherwise we are done for now
+    if have_internet:
+        print("Sucessfully connected to the internet (yeah)")
+        send_status_mail()
+        return
+    else:
+        print("No internet connection here, falling back to hotspot!")
+        fall_back_to_ap()
+        return
+
+def internet_on():
+    try:
+        urllib2.urlopen('http://heise.de', timeout=2)
+        return True
+    except urllib2.URLError as err:
+        return False
 
 @app.route('/CosmicPi_data.csv', methods=['GET'])
+@basic_auth.required
 def csv_export():
     conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
     cursor = conn.cursor()
@@ -223,7 +432,7 @@ def build_plot():
         plt.hist(event_time_list,bins=bin_edges)
         plt.title(plot_title)
         plt.xlabel("Time [UTC]")
-        plt.ylabel("Number of Events per {0:d} second [1]".format(bin_size_seconds))
+        plt.ylabel("Number of Events per {0:d} seconds [1]".format(bin_size_seconds))
 
         plt.subplots_adjust(bottom=0.2)
         plt.xticks(rotation=25)

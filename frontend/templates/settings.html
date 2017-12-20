@@ -13,12 +13,64 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                 Here you can export the latest events in CSV format. <br>
+                Depending on the size of the database the can take some time and the CosmicPi may seem unresponsive. <br>
                 <form method="get" action="/CosmicPi_data.csv">
-                   <button type="submit">Download!</button>
+                   <button type="submit">Download</button>
                 </form>
             </div>
         </div>
     </div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                WiFi Settings
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                Currently connected to: <b>{{ current_wifi }}</b> <br/>
+                <br/>
+                <br/>
+                If you would like to connect to a different WiFi, please select the name in the dropdown list, insert the passwort and click "Connect!"-Button.<br/>
+                Currently networks with WPA, WPA2 and no encryption are supported.
+                <form method="get" action="/connect_to_wifi">
+                    <label>Available WiFi networks:
+                        <select name="selected_wifi">
+                            {% for wifi in available_wifis %}
+                                <option>{{ wifi }}</option>
+                            {% endfor %}
+                        </select>
+                    </label><br/>
+                    <label>Password (leave empty for no password):
+                        <input type="password" name="password" value=""><br/>
+                    </label><br/>
+                    <button type="submit">Connect!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Contact address
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                Currently saved e-mail address: <b>{{ current_email }}</b> <br/>
+                <br/>
+                Please insert your E-Mail address before connecting to any WiFi. The CosmicPi will contact you under this address, once it has connected.
+                Your E-Mail will not be used in any other context, other than helping you setup the CosmicPi. Your address will be deleted on reboot.
+                <form method="get" action="/settings">
+                    <label>E-Mail
+                        <input type="text" name="email" value=""><br/>
+                    </label>
+                    <button type="submit">Save!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <br>
 

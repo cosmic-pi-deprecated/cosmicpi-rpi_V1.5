@@ -27,13 +27,13 @@
 {% block content %}
 	<h1>Dashboard</h1>
 
-    <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto refresh dashboard every 5 seconds
+
 
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
+                <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto refresh dashboard every 5 seconds
             </div>
-            <!-- /.panel-heading -->
             <div class="panel-body">
                 <img id="img" src="/histogram.png?start_time=-120&end_time=9000000000&bin_size_seconds=2"/>
             </div>

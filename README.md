@@ -25,7 +25,7 @@ This behaviour is very much open to discussion.
 - [x]   Display basic information in the WebUI
 - [x]   Start application on boot
 - [x]   Start hotspot on boot
-- [ ]   Connect to a different WiFi via the WebUI
+- [x]   Connect to a different WiFi via the WebUI
 - [ ]   Working install procedure
 - [x]   SystemD services for all components
     - [x]   Detector readout
@@ -35,7 +35,7 @@ This behaviour is very much open to discussion.
 - [x] Authentication for the settings page
 - [x] Interface to create custom plots
 - [x] Include about page
-- [ ] Add useful configurations to the config file
+- [x] Add useful configurations to the config file
 - [ ] Do a test of the installation on a clean raspbian lite installation
 - [ ] Do an as complete as possible test of all components after a fresh installation
 
