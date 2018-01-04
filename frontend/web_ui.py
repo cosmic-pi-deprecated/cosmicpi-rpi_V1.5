@@ -300,6 +300,15 @@ def fall_back_to_ap():
     wpa_supplicant_string += "}\n"
     with open(WPA_SUPPLICANT_LOCATION, 'w') as file:
         file.write(wpa_supplicant_string)
+    # configure controler to accept the new configuration
+    try:
+        import fcntl
+        time.sleep(2)
+        subprocess.call("wpa_cli -i wlan0 reconfigure", shell=True)
+        time.sleep(2)
+    except ImportError:
+        print("This OS is not linux enough to handle a hotspot in this way")
+
     # restart the hotspot
     try:
         import fcntl
@@ -322,15 +331,24 @@ def connect_to_wifi(name, pw):
             wpa_supplicant_string += '\tpsk="{}"\n'.format(net[1])
         wpa_supplicant_string += "}\n"
 
-    # deactivate htospot
+    # deactivate htospot and turn the WiFi back on
     try:
         import fcntl
         subprocess.call("systemctl stop create_ap", shell=True)  # we very much don't care if this fails
+        time.sleep(2)
+        subprocess.call("ifconfig wlan0 up", shell=True)
     except ImportError:
         print("This OS is not linux enough to handle a hotspot in this way")
     # write wpa_supplicant string to the file
     with open(WPA_SUPPLICANT_LOCATION, 'w') as file:
         file.write(wpa_supplicant_string)
+    # configure controler to accept the new configuration
+    try:
+        import fcntl
+        time.sleep(2)
+        subprocess.call("wpa_cli -i wlan0 reconfigure", shell=True)
+    except ImportError:
+        print("This OS is not linux enough to handle a hotspot in this way")
 
     # wait for an internet connection (max 2 min)
     start_time = time.time()
@@ -341,6 +359,8 @@ def connect_to_wifi(name, pw):
     # if we have no internet, restart the hotspot, otherwise we are done for now
     if have_internet:
         print("Sucessfully connected to the internet (yeah)")
+        # wait a bit before we send the mail
+        time.sleep(5)
         send_status_mail()
         return
     else:
