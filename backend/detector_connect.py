@@ -145,7 +145,7 @@ class CosmicPi_V15(detector, threading.Thread):
         while True:
             event_bool = False
             # read lines from serial and parse them
-            #log.debug("Reading line")
+            #log.info("Reading line")
             event_bool = self._read_parse_and_check_for_event()
 
             # when there is an event store it
@@ -247,15 +247,18 @@ class CosmicPi_V15(detector, threading.Thread):
                 return False
 
 
+            #log.info(str(self._event_dict_confirmed))
             # do a pre check if we have all data for a full event stack
             if self._gps_ok == False:
                 return False
-            if not self._all_data_collected:
-                for element in self._event_dict_confirmed:
-                    if bool(self._event_dict_confirmed[element]) == False:
-                        return False
-                # if we arrive here we have enough data and the check is obsolete
-                self._all_data_collected = True
+            # Don't do this check at the moment, it is annoying for development
+            #if not self._all_data_collected:
+            #    for element in self._event_dict_confirmed:
+            #        if bool(self._event_dict_confirmed[element]) == False:
+            #            return False
+            #    # if we arrive here we have enough data and the check is obsolete
+            #    self._all_data_collected = True
+            self._all_data_collected = True
 
             # check if we have an event
             if data_type == "Event":
