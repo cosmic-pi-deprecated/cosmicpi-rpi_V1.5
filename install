@@ -18,12 +18,12 @@ sudo apt --yes upgrade
 
 echo "--- Installing packages via apt"
 # needed for the CosmicPi software
-sudo apt --yes install git python-pip htop
+sudo apt --yes install git python-pip htop python-numpy python-matplotlib python-flask
 # needed for create_ap
 sudo apt --yes install git util-linux procps hostapd iproute2 iw haveged dnsmasq
 
 echo "--- Installing python packages via pip"
-sudo pip  --no-cache-dir install pyserial configparser numpy matplotlib flask flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
+sudo pip  --no-cache-dir install pyserial configparser flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
 echo "we might need some more packages"
 
 echo "--- Installing create_ap via git"
