@@ -26,7 +26,7 @@ This behaviour is very much open to discussion.
 - [x]   Start application on boot
 - [x]   Start hotspot on boot
 - [x]   Connect to a different WiFi via the WebUI
-- [ ]   Working install procedure
+- [x]   Working install procedure
 - [x]   SystemD services for all components
     - [x]   Detector readout
     - [x]   WebUI
@@ -36,7 +36,7 @@ This behaviour is very much open to discussion.
 - [x] Interface to create custom plots
 - [x] Include about page
 - [x] Add useful configurations to the config file
-- [ ] Do a test of the installation on a clean raspbian lite installation
+- [x] Do a test of the installation on a clean raspbian lite installation
 - [ ] Do an as complete as possible test of all components after a fresh installation
 
 
@@ -83,4 +83,5 @@ Stop all mentioned services. After this you should be able to run the software d
 * Database maintenance: Look at ways to aggregate the data, to avoid bloating of the database
 * Do the installation in a proper way, as example with setuptools
 * Run flask on an actual webserver, not the built-in development server
-* Lock the settings page behind a password protection (create a session in flask, etc.)
+* Lock the settings page behind a password protection (create a session in flask, etc.) [DONE]
+* Sqlite database on a ram disk, should speed up access times dramatically
