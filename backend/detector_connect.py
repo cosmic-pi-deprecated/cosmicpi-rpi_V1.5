@@ -196,7 +196,8 @@ class CosmicPi_V15(detector, threading.Thread):
             # check for GPS stings
             gps_type = line_str.split(',')[0]
             # check for a date string
-            if gps_type == "$GPZDA":
+            # ToDo: Make this an actual regular expression for "\$[A-Z][A-Z]ZDA"
+            if gps_type == "$GPZDA" or gps_type == "$GNZDA":
                 # sanity check
                 if not (line_str.count(',') == 6):
                     return False
