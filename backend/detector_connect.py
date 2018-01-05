@@ -95,7 +95,7 @@ class detector():
 
 class CosmicPi_V15(detector, threading.Thread):
     def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, enable_raw_output=False):
-        detector.__init__(self, "CosmicPi V1.5", "1.5.1", sqlite_location)
+        detector.__init__(self, "CosmicPiV1.5", "1.5.1", sqlite_location)
         # todo: put the thread inheritance one higher
         threading.Thread.__init__(self)
         # initilize the needed data structures
