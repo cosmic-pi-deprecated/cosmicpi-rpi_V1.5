@@ -172,8 +172,8 @@ def get_current_and_available_networks():
     try:
         connectedNetworkNameResponse = subprocess.check_output(['sudo','iwgetid'])
     except subprocess.CalledProcessError as e:
-        print 'ERROR get connected network: '
-        print e
+        print('ERROR get connected network: ')
+        print(e)
     except WindowsError as e:
         print("Well, windows just can't do this...")
         connectedNetworkNameResponse = '"maybe a windows network?"'
@@ -188,8 +188,8 @@ def get_current_and_available_networks():
     try:
         availableNetworksResponse = subprocess.check_output(['sudo','iw','dev','wlan0','scan'])
     except subprocess.CalledProcessError as e:
-        print 'ERROR get list of networks: '
-        print e
+        print('ERROR get list of networks: ')
+        print(e)
     except WindowsError as e:
         print("Well, windows just can't do this either...")
         availableNetworksResponse = 'SSID: Network A\nSSID: Network B\n'
