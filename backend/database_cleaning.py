@@ -4,13 +4,8 @@ This program will clean the sqlite database every now and then to keep it from e
 '''
 
 
-import serial
 import time
-import threading
 import sqlite3
-import copy
-import datetime
-from serial import SerialException
 import configparser
 import random
 
