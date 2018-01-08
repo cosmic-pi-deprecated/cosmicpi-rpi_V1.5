@@ -77,7 +77,16 @@ while(True):
 
     # get the most recent time
     cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
-    latest_time = cursor.fetchone()[0]
+    time_row = cursor.fetchone()
+    # ToDo: Popper protection against an empty DB, this isn't working for some reason, but systemd will restart the program, so it's not completly deadly...
+    if time_row == type(None):
+        log.info("Got a none type, retrying in a bit")
+        # sleep for a semi random time
+        time_to_wait = int(random.randrange(30, 90))
+        log.info("Sleeping for: {} [s]".format(time_to_wait))
+        time.sleep(time_to_wait)
+        continue
+    latest_time = time_row[0]
 
     # Get the next events that will be sent
     cursor.execute("SELECT * FROM Events WHERE UTCUnixTime > ?;", (last_sent_event_timestamp,))
