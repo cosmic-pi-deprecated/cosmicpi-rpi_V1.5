@@ -1,0 +1,10 @@
+[Unit]
+Description=Software for cleaning the local database from time to time, to keep it from exploding
+
+[Service]
+ExecStart=/usr/bin/python PATH_TO_EXECUTABLE/backend/database_cleaning.py
+WorkingDirectory=PATH_TO_EXECUTABLE/backend/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

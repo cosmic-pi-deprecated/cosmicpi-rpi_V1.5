@@ -37,10 +37,12 @@ sudo cp -f install_files/create_ap.conf /etc/create_ap.conf
 
 
 echo "--- Setting up systemd services"
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-database_cleaner.service
 sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-detector.service
 sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-UI.service
 sudo cp -f install_files/*.service /etc/systemd/system/
 sudo systemctl daemon-reload
+sudo systemctl enable CosmicPi-database_cleaner.service
 sudo systemctl enable CosmicPi-detector.service
 sudo systemctl enable CosmicPi-UI.service
 sudo systemctl enable create_ap
