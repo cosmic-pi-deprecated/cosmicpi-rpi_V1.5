@@ -18,7 +18,7 @@ sudo apt --yes upgrade
 
 echo "--- Installing packages via apt"
 # needed for the CosmicPi software
-sudo apt --yes install git python-pip htop python-numpy python-matplotlib python-flask
+sudo apt --yes install git python-pip htop python-numpy python-matplotlib python-flask mosquitto mosquitto-clients
 # needed for create_ap
 sudo apt --yes install git util-linux procps hostapd iproute2 iw haveged dnsmasq
 
@@ -37,11 +37,13 @@ sudo cp -f install_files/create_ap.conf /etc/create_ap.conf
 
 
 echo "--- Setting up systemd services"
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-mqtt.service
 sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-database_cleaner.service
 sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-detector.service
 sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-UI.service
 sudo cp -f install_files/*.service /etc/systemd/system/
 sudo systemctl daemon-reload
+sudo systemctl enable CosmicPi-mqtt.service
 sudo systemctl enable CosmicPi-database_cleaner.service
 sudo systemctl enable CosmicPi-detector.service
 sudo systemctl enable CosmicPi-UI.service
