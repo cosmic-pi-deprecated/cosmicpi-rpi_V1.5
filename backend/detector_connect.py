@@ -61,7 +61,7 @@ class detector():
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Events'")
         if cursor.fetchone() == None:
             cursor.execute('''CREATE TABLE Events
-             (UTCUnixTime INTEGER, SubSeconds REAL, TempreatureC REAL, Humidity REAL, AccelX REAL,
+             (UTCUnixTime INTEGER, SubSeconds REAL, TemperatureC REAL, Humidity REAL, AccelX REAL,
               AccelY REAL, AccelZ REAL, MagX REAL, MagY REAL, MagZ REAL, Pressure REAL, Longitude REAL,
               Latitude REAL, DetectorName TEXT, DetectorVersion TEXT);''')
             self._db_conn.commit()

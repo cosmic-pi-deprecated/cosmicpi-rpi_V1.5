@@ -52,7 +52,7 @@ def initDB():
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Events'")
     if cursor.fetchone() == None:
         cursor.execute('''CREATE TABLE Events
-                 (UTCUnixTime INTEGER, SubSeconds REAL, TempreatureC REAL, Humidity REAL, AccelX REAL,
+                 (UTCUnixTime INTEGER, SubSeconds REAL, TemperatureC REAL, Humidity REAL, AccelX REAL,
                   AccelY REAL, AccelZ REAL, MagX REAL, MagY REAL, MagZ REAL, Pressure REAL, Longitude REAL,
                   Latitude REAL, DetectorName TEXT, DetectorVersion TEXT);''')
         conn.commit()
@@ -82,7 +82,7 @@ def getserial():
 
 icon_dict = {
             'UTCUnixTime': "fa fa-clock-o fa-5x",
-            'TempreatureC': "fa fa-thermometer-half fa-5x",
+            'TemperatureC': "fa fa-thermometer-half fa-5x",
             'Humidity': "fa fa-tint fa-5x",
             'AccelX': "fa fa-tachometer fa-5x",
             'AccelY': "fa fa-tachometer fa-5x",
