@@ -13,10 +13,11 @@ import subprocess
 import urllib2
 import time
 import thread
-import logging
 import re
 import smtplib
 from email.mime.text import MIMEText
+import socket
+import struct
 
 
 
@@ -223,9 +224,6 @@ def wifi_connector():
     msg += "If no internet connection is found or the connection was not sucessfull the CosmiPi will recreate the WiFi hotspot. Please wait at least two minutes."
     return msg
 
-
-import socket
-import struct
 
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
