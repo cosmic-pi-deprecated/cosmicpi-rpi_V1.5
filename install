@@ -20,7 +20,7 @@ echo "--- Installing packages via apt"
 # needed for the CosmicPi software
 sudo apt --yes install git python-pip htop python-numpy python-matplotlib python-flask mosquitto mosquitto-clients
 # needed for create_ap
-sudo apt --yes install git util-linux procps hostapd iproute2 iw haveged dnsmasq
+sudo apt --yes install git util-linux procps iproute2 iw haveged
 
 echo "--- Installing python packages via pip"
 sudo pip  --no-cache-dir install pyserial configparser flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
