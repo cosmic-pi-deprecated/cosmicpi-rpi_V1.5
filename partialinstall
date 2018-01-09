@@ -25,6 +25,5 @@ sudo systemctl enable CosmicPi-UI.service
 #sudo systemctl enable create_ap
 #the ap was already done
 
-echo "--- Finished setup! Rebooting now ---"
-sleep 10
-sudo reboot now
+echo "--- Finished setup! Reboot now ---"
+
