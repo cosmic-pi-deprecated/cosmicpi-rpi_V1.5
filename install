@@ -9,7 +9,7 @@ if [ -z "$EXECPATH" ] ; then
   exit 1  # fail
 fi
 echo "$EXECPATH"
-STOREPLACE="PATH_TO_EXECUTABLE"
+TOREPLACE="PATH_TO_EXECUTABLE"
 
 
 echo "--- Updating packages"
