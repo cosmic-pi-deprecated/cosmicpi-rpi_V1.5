@@ -61,7 +61,8 @@ The software is normally controlled via SystemD.
 
 **Start or stop the WebUI:** `sudo systemctl start CosmicPi-UI` or `sudo systemctl stop CosmicPi-UI`
 
-**Start or stop the Hotspot:** `sudo systemctl start create_ap` or `sudo systemctl stop create_ap`
+**Start or stop the Hotspot:** `sudo systemctl start hostapd` or `sudo systemctl stop hostapd
+Note that you should also start and stop the dnsmasq service with the hostapd.`
 
 **View the log output:** `sudo systemctl status CosmicPi-detector` or `sudo systemctl status CosmicPi-UI` or `sudo systemctl status create_ap`
 
@@ -71,7 +72,7 @@ From the raspberry pi itself the application is available at:
 
 When used as an access point the application is available at:
 
-`http://cosmicpi.local/` or `http://192.168.12.1/`
+`http://cosmicpi.local/` or `http://10.0.0.1/`
 
 #### Debugging the software:
 Stop all mentioned services. After this you should be able to run the software directly via the commandline.
