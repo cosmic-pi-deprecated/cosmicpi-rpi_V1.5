@@ -37,8 +37,8 @@ echo "we might need some more packages"
 
 
 echo "--- Installing captiveportal via git"
-git clone https://github.com/CosmicPi/rogue-captive
-cd rogue-captive
+git clone https://github.com/CosmicPi/cosmic-captive
+cd cosmic-captive
 chmod +x install.sh
 sudo ./install.sh
 #it calls for a reboot now, but we'll do this after we've finished.
@@ -58,5 +58,6 @@ sudo systemctl enable CosmicPi-UI.service
 #sudo systemctl enable create_ap
 #the ap was already done
 
-echo "--- Finished setup!"
-
+echo "--- Finished setup! Rebooting now ---"
+sleep 10
+sudo reboot now
