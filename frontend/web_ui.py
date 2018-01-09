@@ -310,8 +310,12 @@ def fall_back_to_ap():
     # restart the hotspot
     try:
         import fcntl
-        subprocess.call("systemctl start create_ap",
+        subprocess.call("systemctl start dnsmasq",
                         shell=True)  # well, here we actually care if the hotspot starts, but oh well...
+        time.sleep(2)
+        subprocess.call("ifconfig wlan0 down", shell=True)
+        time.sleep(2)
+        subprocess.call("ifconfig wlan0 up", shell=True)
     except ImportError:
         print("This OS is not linux enough to handle a hotspot in this way")
 
@@ -332,7 +336,9 @@ def connect_to_wifi(name, pw):
     # deactivate htospot and turn the WiFi back on
     try:
         import fcntl
-        subprocess.call("systemctl stop create_ap", shell=True)  # we very much don't care if this fails
+        subprocess.call("systemctl stop dnsmasq", shell=True)  # we very much don't care if this fails
+        time.sleep(2)
+        subprocess.call("ifconfig wlan0 down", shell=True)
         time.sleep(2)
         subprocess.call("ifconfig wlan0 up", shell=True)
     except ImportError:
