@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo "--- Getting executable path"
+EXECPATH="`dirname \"$0\"`"              # relative
+EXECPATH="`( cd \"$EXECPATH\" && pwd )`"  # absolutized and normalized
+if [ -z "$EXECPATH" ] ; then
+  # error; for some reason, the path is not accessible
+  # to the script (e.g. permissions re-evaled after suid)
+  exit 1  # fail
+fi
+echo "$EXECPATH"
+TOREPLACE="PATH_TO_EXECUTABLE"
+
+echo "--- Setting up systemd services"
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-mqtt.service
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-database_cleaner.service
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-detector.service
+sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-UI.service
+sudo cp -f install_files/*.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable CosmicPi-mqtt.service
+sudo systemctl enable CosmicPi-database_cleaner.service
+sudo systemctl enable CosmicPi-detector.service
+sudo systemctl enable CosmicPi-UI.service
+#sudo systemctl enable create_ap
+#the ap was already done
+
+echo "--- Finished setup! Rebooting now ---"
+sleep 10
+sudo reboot now
