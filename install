@@ -26,14 +26,22 @@ echo "--- Installing python packages via pip"
 sudo pip  --no-cache-dir install pyserial configparser flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
 echo "we might need some more packages"
 
-echo "--- Installing create_ap via git"
-git clone https://github.com/oblique/create_ap --depth 1
-cd create_ap
-sudo make install
-cd ..
-sudo rm -rf create_ap
+#echo "--- Installing create_ap via git"
+#git clone https://github.com/oblique/create_ap --depth 1
+#cd create_ap
+#sudo make install
+#cd ..
+#sudo rm -rf create_ap
 # copy the config file
-sudo cp -f install_files/create_ap.conf /etc/create_ap.conf
+#sudo cp -f install_files/create_ap.conf /etc/create_ap.conf
+
+
+echo "--- Installing captiveportal via git"
+git clone https://github.com/CosmicPi/rogue-captive
+cd rogue-captive
+chmod +x install.sh
+sudo ./install.sh
+#it calls for a reboot now, but we'll do this after we've finished.
 
 
 echo "--- Setting up systemd services"
@@ -47,7 +55,8 @@ sudo systemctl enable CosmicPi-mqtt.service
 sudo systemctl enable CosmicPi-database_cleaner.service
 sudo systemctl enable CosmicPi-detector.service
 sudo systemctl enable CosmicPi-UI.service
-sudo systemctl enable create_ap
+#sudo systemctl enable create_ap
+#the ap was already done
 
 echo "--- Finished setup!"
 
