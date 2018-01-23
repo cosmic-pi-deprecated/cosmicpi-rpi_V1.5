@@ -1,30 +1,30 @@
 #!/bin/bash
-
-echo "--- Getting executable path"
-EXECPATH="`dirname \"$0\"`"              # relative
-EXECPATH="`( cd \"$EXECPATH\" && pwd )`"  # absolutized and normalized
-if [ -z "$EXECPATH" ] ; then
+echo "Sorry. This procedure isn't ready yet, We're working on it! "
+#echo "--- Getting executable path"
+#EXECPATH="`dirname \"$0\"`"              # relative
+#EXECPATH="`( cd \"$EXECPATH\" && pwd )`"  # absolutized and normalized
+#if [ -z "$EXECPATH" ] ; then
   # error; for some reason, the path is not accessible
   # to the script (e.g. permissions re-evaled after suid)
-  exit 1  # fail
-fi
-echo "$EXECPATH"
-TOREPLACE="PATH_TO_EXECUTABLE"
+#  exit 1  # fail
+#fi
+#echo "$EXECPATH"
+#TOREPLACE="PATH_TO_EXECUTABLE"
 
 
 echo "--- Updating packages"
 sudo apt --yes update
 sudo apt --yes upgrade
 
-echo "--- Installing packages via apt"
+#echo "--- Installing packages via apt"
 # needed for the CosmicPi software
-sudo apt --yes install git python-pip htop python-numpy python-matplotlib python-flask mosquitto mosquitto-clients
+#sudo apt --yes install git python-pip htop python-numpy python-matplotlib python-flask mosquitto mosquitto-clients
 # needed for create_ap
 #sudo apt --yes install git util-linux procps iproute2 iw haveged
 
-echo "--- Installing python packages via pip"
-sudo pip  --no-cache-dir install pyserial configparser flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
-echo "we might need some more packages"
+#echo "--- Installing python packages via pip"
+#sudo pip  --no-cache-dir install pyserial configparser flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
+#echo "we might need some more packages"
 
 #echo "--- Installing create_ap via git"
 #git clone https://github.com/oblique/create_ap --depth 1
@@ -36,28 +36,28 @@ echo "we might need some more packages"
 #sudo cp -f install_files/create_ap.conf /etc/create_ap.conf
 
 
-echo "--- Installing captiveportal via git"
-git clone https://github.com/CosmicPi/cosmic-captive
-cd cosmic-captive
-chmod +x install.sh
-sudo ./install.sh
+#echo "--- Installing captiveportal via git"
+#git clone https://github.com/CosmicPi/cosmic-captive
+#cd cosmic-captive
+#chmod +x install.sh
+#sudo ./install.sh
 #it calls for a reboot now, but we'll do this after we've finished.
 
 
-echo "--- Setting up systemd services"
-sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-mqtt.service
-sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-database_cleaner.service
-sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-detector.service
-sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-UI.service
-sudo cp -f install_files/*.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable CosmicPi-mqtt.service
-sudo systemctl enable CosmicPi-database_cleaner.service
-sudo systemctl enable CosmicPi-detector.service
-sudo systemctl enable CosmicPi-UI.service
+#echo "--- Setting up systemd services"
+#sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-mqtt.service
+#sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-database_cleaner.service
+#sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-detector.service
+#sed -i -e "s+$TOREPLACE+$EXECPATH+g" install_files/CosmicPi-UI.service
+#sudo cp -f install_files/*.service /etc/systemd/system/
+#sudo systemctl daemon-reload
+#sudo systemctl enable CosmicPi-mqtt.service
+#sudo systemctl enable CosmicPi-database_cleaner.service
+#sudo systemctl enable CosmicPi-detector.service
+#sudo systemctl enable CosmicPi-UI.service
 #sudo systemctl enable create_ap
 #the ap was already done
 
-echo "--- Finished setup! Rebooting now ---"
-sleep 10
-sudo reboot now
+#echo "--- Finished setup! Rebooting now ---"
+#sleep 10
+#sudo reboot now
