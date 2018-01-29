@@ -42,7 +42,7 @@ echo "--- changing static ip address to 192.168.12.1 ---"
 cp -f dhcpcd.conf /etc/dhcpcd.conf
 
 echo"--- preventing this script from running next reboot ---"
-cp -f normalrc.local /etc/rc.local
+sudo cp -f normalrc.local /etc/rc.local
 
 echo "--- Finished setup! Rebooting now ---"
 sleep 10
