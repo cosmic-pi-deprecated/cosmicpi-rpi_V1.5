@@ -12,7 +12,6 @@ sudo apt --yes install git python-pip htop python-numpy python-matplotlib python
 
 echo "--- Installing python packages via pip"
 sudo pip  --no-cache-dir install pyserial configparser flask_googlemaps Flask-BasicAuth --extra-index-url https://www.piwheels.hostedpi.com/simple
-#echo "we might need some more packages"
 
 echo "--- Getting executable path"
 EXECPATH="`dirname \"$0\"`"              # relative
@@ -38,13 +37,16 @@ sudo systemctl enable CosmicPi-detector.service
 sudo systemctl enable CosmicPi-UI.service
 #the ap was already done
 
-echo "--- changing static ip address to 192.168.12.1 ---" 
+echo "--- changing static ip address to 192.168.12.1 in standalone mode---" 
 cp -f dhcpcd.conf /etc/dhcpcd.conf
 
-echo"--- preventing this script from running next reboot ---"
-chmod +x normalrc.local
-sudo cp -f normalrc.local /etc/rc.local
+#echo"--- preventing this script from running next reboot ---"
+#chmod +x normalrc.local
+#sudo cp -f normalrc.local /etc/rc.local
 
-echo "--- Finished setup! Rebooting now ---"
-sleep 10
+echo "--- Finished setup! Rebooting now, when this is done your Cosmic Pi should start working ---"
+echo "--- To connect go to the IP address assigned by your network to the CosmicPi device, or  ---"
+echo "--- cosmicpi.local if you have the correct type of browser. If you are operating in      ---"
+echo "--- stand-alone mode via the CosmicPi wifi network, go directly to 192.168.12.1          ---"
+sleep 15
 sudo reboot now
