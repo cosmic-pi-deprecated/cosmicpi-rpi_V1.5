@@ -268,9 +268,14 @@ class CosmicPi_V15(detector, threading.Thread):
                     return False
                 sub_sec_string = line_str.split(':')[2]
                 sub_sec_string = sub_sec_string.split(';')[0]
-                # currently we are getting micros() here
-                # so divide them by 1000000.0
-                current_subSeconds = float(sub_sec_string) / 1000000.0
+                # check if we are using the old or new event format
+                if sub_sec_string.count('/') == 0:
+                    # this is the old format using the micros function, so we simply divide by 1000000.0
+                    current_subSeconds = float(sub_sec_string) / 1000000.0
+                elif sub_sec_string.count('/') == 1:
+                    # this is the newer format and we need to divide the first number by the second one
+                    divisors = sub_sec_string.split('/')
+                    current_subSeconds = float(divisors[0]) / float(divisors[1])
                 # make sure we are actually seeing something new
                 if (self._event_dict['SubSeconds'] == current_subSeconds):
                     return False
