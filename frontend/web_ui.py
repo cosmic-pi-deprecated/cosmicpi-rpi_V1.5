@@ -35,9 +35,6 @@ UI_PASS = config.get("UI", "password")
 DEFAULT_WIFI_NAME = config.get("Default WiFi", "name")
 DEFAULT_WIFI_PASS = config.get("Default WiFi", "password")
 WPA_SUPPLICANT_LOCATION = str(config.get("MISC", "wpa_supplicant_location"))
-global_user_address = ''
-GMAIL_USER = "cosmicpidevice@gmail.com"
-GMAIL_PW = 'meineguete'
 
 # start flask
 app = Flask(__name__)
@@ -159,12 +156,8 @@ def plotting_page():
 @app.route('/settings/', methods=['GET', 'POST'])
 @basic_auth.required
 def settings_page():
-    email = request.args.get('email')
-    global global_user_address
-    if not email == None:
-        global_user_address = email
     current_WiFi, avail_WiFi = get_current_and_available_networks()
-    return render_template('settings.html', available_wifis=avail_WiFi, current_wifi=current_WiFi, current_email=global_user_address)
+    return render_template('settings.html', available_wifis=avail_WiFi, current_wifi=current_WiFi)
 
 def get_current_and_available_networks():
     wifiNetworkList = ''
@@ -177,7 +170,7 @@ def get_current_and_available_networks():
         print(e)
     except WindowsError as e:
         print("Well, windows just can't do this...")
-        connectedNetworkNameResponse = '"maybe a windows network?"'
+        connectedNetworkNameResponse = '"No networks found, because the WebUI is beeing executed on windows."'
     connectedNetworkNameStr = re.findall('\"(.*?)\"', connectedNetworkNameResponse) #" Find the string between quotes
     if len(connectedNetworkNameStr) < 1:
         connectedNetworkNameStr = ''
@@ -210,17 +203,11 @@ def wifi_connector():
     wifi_name = request.args.get('selected_wifi')
     wifi_pw = request.args.get('password')
 
-    # check that the user has given a mail address
-    global global_user_address
-    if global_user_address == "":
-        return 'Please save an e-mail address before connecting to any other WiFi! <a href="/settings/">Go back to the settings page</a>'
-
     # launch the wifi login in a different thread
     # we need to to it like this, since otherwise the user would never recieve an answer...
     thread.start_new_thread(connect_to_wifi, (wifi_name, wifi_pw))
 
     msg = 'The CosmicPi will now try to connect to the WiFi "{}". '.format(wifi_name)
-    msg += "When the CosmicPi has connected to the internet you will receive an e-mail. "
     msg += "If no internet connection is found or the connection was not sucessfull the CosmiPi will recreate the WiFi hotspot. Please wait at least two minutes."
     return msg
 
