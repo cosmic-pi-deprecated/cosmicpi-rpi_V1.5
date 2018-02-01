@@ -1,10 +1,12 @@
- This project is licensed under GPL V2 or later.
- By using this code all cosmic ray and associated data will be uploaded
+ This project code is licensed under GPL V2 or later.
+ 
+The cosmic ray and associated data collected using this code will be uploaded
  to the internet via MQTT under a no rights reserved, public domain
  license, CC0. For details of this license see:
  https://creativecommons.org/share-your-work/public-domain/cc0/
  
- GNU GENERAL PUBLIC LICENSE
+ 
+                    GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
