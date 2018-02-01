@@ -102,6 +102,6 @@ while(True):
     last_sent_event_timestamp = latest_time
 
     # sleep for a semi random time
-    time_to_wait = int(random.randrange(30, 90))
+    time_to_wait = int(random.randrange(1, 5))
     log.info("Sleeping for: {} [s]".format(time_to_wait))
     time.sleep(time_to_wait)
