@@ -1,5 +1,6 @@
 .idea/
 storage/sqlite_db
+storage/sqlite_db_edit
 backend/1-5_raw_output.log
 *.log
 some_file_location
