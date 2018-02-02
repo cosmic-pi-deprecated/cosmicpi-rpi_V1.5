@@ -1,9 +1,6 @@
 {% extends "cosmic_base.html" %}
 {% block title %}Custom Plotting{% endblock %}
 {% block head_additions %}
-    {# The flask_googlemaps package does not work if installed via "sudo pip ...", I should figure out how to fix this #}
-     {#  {{"decoupled-map"|googlemap_js(location_vars['Latitude'], location_vars['Longitude'], markers=[( location_vars['Latitude'], location_vars['Longitude'] )])}}  #}
-
 {% endblock %}
 {% block content %}
 	<h1>Custom functionality</h1>
@@ -15,7 +12,8 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                 {# {{"decoupled-map"|googlemap_html(location_vars['Latitude'], location_vars['Longitude']) }}  #}
+                {# TODO: Switch from google maps to openstreet map #}
+                <iframe width="100%" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q={{ location_vars['Latitude'] }},{{ location_vars['Longitude'] }}&amp;key=AIzaSyBjX-IrwBEp7lncv8Q-OXsY549c5zNh_kY"></iframe>
             </div>
         </div>
     </div>

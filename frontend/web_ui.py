@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import io
 import sqlite3
 import matplotlib.dates as mdates
-from flask_googlemaps import GoogleMaps
 import csv
 from flask_basicauth import BasicAuth
 import configparser
@@ -475,5 +474,4 @@ def build_plot():
 if __name__ == '__main__':
     # do necessary inits
     initDB()
-    GoogleMaps(app, key="AIzaSyD_RgwMc6X6LpkAmskk4fWmafNFXtlB7_s")
     app.run()
