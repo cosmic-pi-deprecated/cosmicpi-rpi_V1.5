@@ -11,6 +11,7 @@ import configparser
 import random
 import json
 import subprocess
+import socket
 
 import logging as log
 log.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log.INFO)
@@ -42,10 +43,30 @@ def getserial():
 
     return cpuserial
 
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        import fcntl
+        result = socket.inet_ntoa(fcntl.ioctl(
+                                                s.fileno(),
+                                                0x8915,  # SIOCGIFADDR
+                                                struct.pack('256s', ifname[:15])
+                                            )[20:24])
+    except IOError:
+        print("Error getting the IP address, either you are not doing this on raspbian or the queried device does not exist.")
+        result = "no IP on {}".format(ifname)
+    except WindowsError:
+        print("Getting the IP address on Windows is not implemented")
+        result = "no IP on {}".format(ifname)
+    except ImportError:
+        print("Getting the IP address on this OS is not implemented")
+        result = "no IP on {}".format(ifname)
+    return  result
+
 def send_via_mqtt(broker_address, broker_topic, message):
     execution_string = "mosquitto_pub -h {} -t '{}' -m '{}'".format(broker_address, broker_topic, message)
     log.debug("Executing the following: {}".format(execution_string))
-    # ToDo: This is unsafe, change it!
+    # ToDo: This is unsafe, though there should be no user data here the risk of code injection is low.
     subprocess.call(execution_string, shell=True)
 
 # settings files
@@ -94,7 +115,13 @@ while(True):
     available_events = cursor.fetchall()
     log.info("Searched for events since: {}; Found the following number of new events: {}".format(last_sent_event_timestamp, len(available_events)))
     for event in available_events:
-        message = json.dumps(dict(event))
+        message_dict = {
+                        "data": dict(event),
+                        "meta": {
+                            "local IP": get_ip_address("wlan0")
+                        }
+                        }
+        message = json.dumps(message_dict)
         send_via_mqtt(broker_address, broker_topic, message)
     db_conn.close()
 
