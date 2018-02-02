@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Sorry. This procedure isn't ready yet, We're working on it! "
+echo "In case of any issues please consult cosmicpi.org for help, or contact us via Facebook "
 
 echo "--- Part 1: Expand the file system ---"
 echo "--- Expanding root file system ---"
