@@ -55,9 +55,6 @@ def get_ip_address(ifname):
     except IOError:
         print("Error getting the IP address, either you are not doing this on raspbian or the queried device does not exist.")
         result = "no IP on {}".format(ifname)
-    except WindowsError:
-        print("Getting the IP address on Windows is not implemented")
-        result = "no IP on {}".format(ifname)
     except ImportError:
         print("Getting the IP address on this OS is not implemented")
         result = "no IP on {}".format(ifname)
