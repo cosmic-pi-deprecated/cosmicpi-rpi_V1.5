@@ -222,13 +222,13 @@ def get_ip_address(ifname):
                                             )[20:24])
     except IOError:
         print("Error getting the IP address, either you are not doing this on raspbian or the queried device does not exist.")
-        result = "some_ip"
+        result = "no IP on {}".format(ifname)
     except WindowsError:
-        print("Windows can not do such things, don't force it ^^")
-        result = "some_ip"
+        print("Getting the IP address on Windows is not implemented")
+        result = "no IP on {}".format(ifname)
     except ImportError:
-        print("This OS can not do such things, don't force it ^^")
-        result = "some_ip"
+        print("Getting the IP address on this OS is not implemented")
+        result = "no IP on {}".format(ifname)
     return  result
 
 
