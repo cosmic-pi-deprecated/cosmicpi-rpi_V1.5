@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Sorry. This procedure isn't ready yet, We're working on it! "
+
 
 echo "--- Part 2: Updates and installation ---"
 echo "--- Updating packages"
