@@ -360,12 +360,8 @@ def about_page():
     return render_template('about.html')
 
 
-@app.route('/histogram.png')
-def build_plot():
-    # get user set parameters
-    start_time = request.args.get('start_time', type=int)
-    end_time = request.args.get('end_time', type=int)
-    bin_size_seconds = request.args.get('bin_size_seconds', type=int)
+# returns the histogram as a png byte stream
+def build_histogram(start_time, end_time, bin_size_seconds):
     plot_title = ''
 
     # get some data
@@ -374,7 +370,8 @@ def build_plot():
     cursor = conn.cursor()
     # only get the last n seconds if the start time was negative
     if start_time < 0:
-        plot_title += "Histogram of events over the last {0:.1f} minutes\nbin size: {1:d} [s]".format(-start_time/60., bin_size_seconds)
+        plot_title += "Histogram of events over the last {0:.1f} minutes\nbin size: {1:d} [s]".format(-start_time / 60.,
+                                                                                                      bin_size_seconds)
         cursor.execute("SELECT * FROM Events ORDER BY UTCUnixTime DESC, SubSeconds DESC;")
         start_time = cursor.fetchone()[0] + start_time
         end_time = 9000000000
@@ -391,16 +388,16 @@ def build_plot():
         plt.title("No data to display")
     else:
         event_time_list = [data[i][0] + data[i][1] for i in range(len(data))]
-        #event_time_list = [data[i][0] for i in range(len(data))]
+        # event_time_list = [data[i][0] for i in range(len(data))]
         bin_edges = range(int(event_time_list[len(event_time_list) - 1]), int(event_time_list[0]), bin_size_seconds)
-        x_axis_limits = (start_time, int(event_time_list[0])+1)
+        x_axis_limits = (start_time, int(event_time_list[0]) + 1)
         # convert our unix timestamps to Matplotlib  format
         event_time_list = mdates.epoch2num(event_time_list)
         bin_edges = mdates.epoch2num(bin_edges)
         x_axis_limits = mdates.epoch2num(x_axis_limits)
 
         # make the plot
-        plt.hist(event_time_list,bins=bin_edges)
+        plt.hist(event_time_list, bins=bin_edges)
         plt.title(plot_title)
         plt.xlabel("Time [UTC]")
         plt.ylabel("Number of Events per {0:d} seconds [1]".format(bin_size_seconds))
@@ -414,7 +411,7 @@ def build_plot():
         # do the date formatting
         ax = plt.gca()
         locator = mdates.AutoDateLocator(minticks=7)
-        locator.intervald[mdates.SECONDLY] = [1,10,30]
+        locator.intervald[mdates.SECONDLY] = [1, 10, 30]
         formatter = mdates.AutoDateFormatter(locator)
         formatter.scaled[1 / (24. * 60.)] = '%H:%M:%S'
         ax.xaxis.set_major_locator(locator)
@@ -426,13 +423,45 @@ def build_plot():
     plt.savefig(img, format='png')
     img.seek(0)
     plt.close()
-    response = make_response(img.getvalue())
+    return img.getvalue()
+
+@app.route('/histogram.png')
+def serve_histogram_request():
+    # get user set parameters
+    start_time = request.args.get('start_time', type=int)
+    end_time = request.args.get('end_time', type=int)
+    bin_size_seconds = request.args.get('bin_size_seconds', type=int)
+
+    # render the plot
+    img = build_histogram(start_time, end_time, bin_size_seconds)
+
+    # return the plot
+    response = make_response(img)
     response.headers['Content-Type'] = 'image/png'
     return response
 
+def periodically_render_dashboard_histogram():
+    while True:
+        # standard values for the dashboard histogram
+        start_time = -120
+        end_time = 9000000000
+        bin_size_seconds = 2
+        # place where we need to save the image
+        path_to_static_image = "static/images/dashboard_histogram.png"
 
+        # render the plot
+        img = build_histogram(start_time, end_time, bin_size_seconds)
+
+        # save the image to disk
+        with open(path_to_static_image, 'wb') as f:
+            f.write(img)
+
+        # wait four seconds until we render the next plot
+        time.sleep(4)
 
 if __name__ == '__main__':
     # do necessary inits
     initDB()
+    # Launch the periodical histogram renderer for the dashboard
+    thread.start_new_thread(periodically_render_dashboard_histogram, ())
     app.run()
