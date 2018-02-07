@@ -13,8 +13,6 @@ import urllib2
 import time
 import thread
 import re
-import smtplib
-from email.mime.text import MIMEText
 import socket
 import struct
 
@@ -232,44 +230,6 @@ def get_ip_address(ifname):
     return  result
 
 
-def send_status_mail():
-    # prepare everything we need in advance
-    current_wifi = get_current_and_available_networks()[0]
-    listtatata = {'Currently connected network': current_wifi,
-                 'Current IP address': get_ip_address("wlan0"),
-                 'Serial number': getserial()
-                 }
-    content = "Hello there,\n\n"
-    content += 'Your CosmicPi has just connected to the network "{}". '.format(current_wifi)
-    content += "When your computer is connected to {}, you can reach the cosmic Pi via this address: http://{}/\n\n".format(current_wifi, listtatata['Current IP address'])
-    content += "Please do not answer to this e-mail, the address is only used by the CosmicPi devices and can not answer you.\n"
-    content += "If you have any questions or could use some help, do not hesitate to contact us at: contact@cosmicpi.org\n\n"
-    content += "All the best,\nYour CosmicPi-Team\n\n\n"
-    content += "Some information about your CosmicPi:\n"
-    for key in listtatata.keys():
-        content += "{}: {}\n".format(key, listtatata[key])
-
-    msg = MIMEText(content)
-    msg['Subject'] = 'Your CosmicPi has connected to the internet!'
-    msg['From'] = GMAIL_USER
-    msg['To'] = global_user_address
-
-    # connect to google
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.ehlo()
-    server.starttls()
-    # login
-    server.login(GMAIL_USER, GMAIL_PW)
-    # send the mail
-    try:
-        server.sendmail(msg['From'], msg['To'], msg.as_string())
-    except smtplib.SMTPRecipientsRefused:
-        print("The e-mail address was invalid! Falling back to AP mode, otherwise the CosmicPi is potentially lost!")
-        fall_back_to_ap()
-    # end contact
-    server.quit()
-
-
 def fall_back_to_ap():
     # empty the wpa supplicant to it's default
     wpa_supplicant_string = "country=GB\n"  # Todo: Check, that this string in front is still correct!
@@ -351,7 +311,8 @@ def connect_to_wifi(name, pw):
         print("Sucessfully connected to the internet (yeah)")
         # wait a bit before we send the mail
         time.sleep(5)
-        send_status_mail()
+        # ToDo: This would be a good point to send a mail or something similar to the user.
+        # Just to inform them where their cosmicPi is and what's it doing
         return
     else:
         print("No internet connection here, falling back to hotspot!")
