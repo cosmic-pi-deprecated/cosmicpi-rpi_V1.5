@@ -159,7 +159,7 @@ class CosmicPi_V15(detector, threading.Thread):
             line = self.ser.readline()
             log.debug("Waiting serial input bytes: " + str(self.ser.inWaiting()))
         except SerialException as e:
-            log.critical("Received a SerialException while reading the serial port (somebody probably unplugged the damn cable!). Printing error:")
+            log.critical("Received a SerialException while reading the serial port (somebody probably unplugged the cable). Printing error:")
             log.critical(e)
             raise RuntimeError("The detector can not function without a serial connection.")
         line_str = str(line)
@@ -217,7 +217,6 @@ class CosmicPi_V15(detector, threading.Thread):
                                                         tzinfo=None)
                 self._event_dict['UTCUnixTime'] = (self._time_from_gps - datetime.datetime(1970,1,1)).total_seconds()
                 self._event_dict_confirmed['UTCUnixTime'] = True
-                tt = self._event_dict['UTCUnixTime']
                 return False
 
             # check for a location string
