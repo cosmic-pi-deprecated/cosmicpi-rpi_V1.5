@@ -2,8 +2,8 @@
 Description=Software for connecting to the the CosmicPi detector
 
 [Service]
-ExecStart=/usr/bin/python PATH_TO_EXECUTABLE/backend/detector_connect.py
-WorkingDirectory=PATH_TO_EXECUTABLE/backend/
+ExecStart=/usr/bin/python /home/pi/cosmicpi-rpi_V1.5/backend/detector_connect.py
+WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/backend/
 Restart=on-failure
 
 [Install]

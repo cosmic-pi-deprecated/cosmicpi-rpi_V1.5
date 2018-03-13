@@ -3,9 +3,9 @@ Description=Software for the CosmicPi UI
 
 [Service]
 # Flask Env Vars
-Environment=FLASK_APP=PATH_TO_EXECUTABLE/frontend/web_ui.py
+Environment=FLASK_APP=/home/pi/cosmicpi-rpi_V1.5/frontend/web_ui.py
 ExecStart=/usr/bin/python -m flask run --host=0.0.0.0 --port=80
-WorkingDirectory=PATH_TO_EXECUTABLE/frontend/
+WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/frontend/
 Restart=on-failure
 
 [Install]
