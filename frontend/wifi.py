@@ -54,7 +54,7 @@ class Wifi(Resource):
 
     def put(self):
         ssid = request.form['ssid']
-        password = request.form['password']
+        password = request.form['pass']
 
         thread.start_new_thread(connect_to_wifi, (ssid, password))
 
@@ -141,7 +141,7 @@ def connect_to_wifi(name, pw):
     # wait for an internet connection (max 2 min)
     start_time = time.time()
     have_internet = False
-    while (have_internet == False) and ((start_time + 120) >  time.time()):
+    while not have_internet and ((start_time + 120) > time.time()):
         have_internet = internet_on()
 
     # if we have no internet, restart the hotspot, otherwise we are done for now
