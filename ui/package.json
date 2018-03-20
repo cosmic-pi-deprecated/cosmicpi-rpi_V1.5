@@ -1,0 +1,39 @@
+{
+  "name": "cosmicpi-ui",
+  "version": "1.0.0",
+  "description": "Web interface for Cosmic Pi",
+  "main": "webpack.config.js",
+  "scripts": {
+    "dev": "webpack-dev-server --open --mode development",
+    "build": "webpack --progress --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cosmicpi",
+    "ui",
+    "muon",
+    "detector"
+  ],
+  "author": "",
+  "license": "ISC",
+  "sideEffects": false,
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-loader": "^7.1.4",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "style-loader": "^0.20.3",
+    "url-loader": "^1.0.1",
+    "vue-loader": "^14.2.1",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
