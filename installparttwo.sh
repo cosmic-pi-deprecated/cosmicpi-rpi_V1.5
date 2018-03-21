@@ -39,7 +39,9 @@ sudo systemctl enable CosmicPi-UI.service
 
 echo "--- changing static ip address to 192.168.12.1 in standalone mode---" 
 cp -f dhcpcd.conf /etc/dhcpcd.conf
+sudo systemctl stop dnsmasq
 cp -f dnsmasq.conf /etc/dnsmasq.conf
+sudo systemctl start dnsmasq
 
 #echo"--- preventing this script from running next reboot ---"
 #chmod +x normalrc.local
