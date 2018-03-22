@@ -37,6 +37,10 @@ hr {
     border-right: 1px solid #111;
 }
 
+#sidebar #copyright {
+    font-size: 14px;
+}
+
 #sidebar ul {
     padding: 0;
     margin: 0;
@@ -59,7 +63,7 @@ hr {
     width: 100%;
     display: block;
     color: #ddd;
-    font-size: 18px;
+    font-size: 16px;
     transition: padding 0.2s;
 }
 
@@ -75,8 +79,6 @@ hr {
 
 #sidebar #logo {
     width: 100%;
-    padding: 5px 10px;
-    margin-bottom: 20px;
 }
 
 #sidebar p {
@@ -92,10 +94,6 @@ hr {
     height: 100%;
     overflow-y: auto;
     background-color: white;
-}
-
-.component-content {
-    padding: 4px 20px;
 }
 
 @media(max-width:768px) {
