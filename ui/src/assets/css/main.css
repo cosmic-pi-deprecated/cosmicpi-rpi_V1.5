@@ -108,13 +108,10 @@ hr {
     #sidebar .hideable {
         display: none;
     }
-}
 
-.box {
-    border: 1px solid #ddd;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 5px; 
+    .card {
+        margin: 0 -25px;
+    }
 }
 
 .card-narrow {

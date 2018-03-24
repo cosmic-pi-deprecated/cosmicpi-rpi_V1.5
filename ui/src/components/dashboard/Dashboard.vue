@@ -1,10 +1,10 @@
 <template>
 <div>
   <div class="row">
-    <div class="col-6">
+    <div class="col-sm-12 col-md-6">
       <Histogram></Histogram>
     </div>
-    <div class="col-6">
+    <div class="col-sm-12 col-md-6">
       <Location :longitude=lastLongitude :latitude=lastLatitude></Location>
     </div>
   </div>

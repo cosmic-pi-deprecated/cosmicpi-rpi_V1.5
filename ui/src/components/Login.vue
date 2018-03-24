@@ -1,22 +1,28 @@
 <template>
-<div class="col-md-4 offset-md-4 col-sm-6 offset-sm-4 box">
-    <h3 class="text-center">Login</h3>
-    <hr />
-    <div v-if="!authFail" class="alert alert-warning" role="alert">
-        Login is required to access to settings
-    </div>
-    <div v-if="authFail" class="alert alert-danger" role="alert">
-        Username or password is not correct
-    </div>
-    <form @submit.prevent="onLoginSubmit">
-        <div class="form-group">
-            <input type="text" ref="username" value="cosmicpi" class="form-control" placeholder="Username">
+<div class="col-md-6 offset-md-3 col-sm-8 offset-sm-2 ">
+    <div class="card card-default">
+        <div class="card-header">
+            <h3>Login</h3>
         </div>
-        <div class="form-group">
-            <input type="password" ref="password" value="MuonsFROMSp8ce" class="form-control" placeholder="Password">
+        
+        <div class="card-body">
+            <div v-if="!authFail" class="alert alert-warning" role="alert">
+                Login is required to access to settings
+            </div>
+            <div v-if="authFail" class="alert alert-danger" role="alert">
+                Username or password is not correct
+            </div>
+            <form @submit.prevent="onLoginSubmit">
+                <div class="form-group">
+                    <input type="text" ref="username" value="cosmicpi" class="form-control" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <input type="password" ref="password" value="MuonsFROMSp8ce" class="form-control" placeholder="Password">
+                </div>
+                <button type="submit" ref="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+            </form>
         </div>
-        <button type="submit" ref="submit" class="btn btn-primary btn-lg btn-block">Login</button>
-    </form>
+    </div>
 </div>
 </template>
 
