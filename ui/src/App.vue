@@ -20,6 +20,12 @@
               </router-link>
           </li>
           <li>
+              <router-link to="/science">
+                  <i class="fa fa-flask"></i>
+                  <span class="hideable">Science</span>
+              </router-link>
+          </li>
+          <li>
               <router-link to="/settings">
                   <i class="fa fa-gears"></i>
                   <span class="hideable">Settings</span>

@@ -62,12 +62,3 @@ export default {
     },
 }
 </script>
-
-<style>
-.box {
-    border: 1px solid #ddd;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 5px; 
-}
-</style>
