@@ -14,9 +14,9 @@ SQLITE_LOCATION = Config.get("Storage", "sqlite_location")
 
 class Histogram(Resource):
     def get(self):
-        start_time = int(request.args['start_time'])
-        end_time = int(request.args['end_time'])
-        bin_size_seconds = int(request.args['bin_size_seconds'])
+        start_time = int(request.args['from'])
+        end_time = int(request.args['to'])
+        bin_size_seconds = int(request.args['bin_size'])
 
         # render the plot
         img = build_histogram(start_time, end_time, bin_size_seconds)

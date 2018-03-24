@@ -12,8 +12,9 @@ SQLITE_LOCATION = Config.get("Storage", "sqlite_location")
 class Series(Resource):
     def get(self):
         format = request.args['format']
-        limit = request.args.get('limit', 20)
-        since = request.args.get('since', 0)
+        limit = int(request.args.get('limit', 20))
+        since = int(request.args.get('from', 0))
+        to = int(request.args.get('to', 2147483646))
 
         conn = sqlite3.connect(SQLITE_LOCATION, timeout=60.0)
         cursor = conn.cursor()
@@ -26,7 +27,7 @@ class Series(Resource):
             col_names.append(col_data[i][1])
 
         # Get data from database
-        cursor.execute("SELECT * FROM Events WHERE UTCUnixTime >= %d ORDER BY UTCUnixTime DESC, SubSeconds DESC LIMIT %d;" % (since, limit))
+        cursor.execute("SELECT * FROM Events WHERE (UTCUnixTime >= %d AND UTCUnixTime <= %d) ORDER BY UTCUnixTime DESC, SubSeconds DESC LIMIT %d;" % (since, to, limit))
         data = cursor.fetchall()
         conn.close()
 
