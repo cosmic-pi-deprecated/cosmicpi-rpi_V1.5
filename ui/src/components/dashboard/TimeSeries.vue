@@ -51,6 +51,14 @@ export default {
             },
             options: {
                 animation: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        display: false
+                    }]
+                },
             },
         });
 

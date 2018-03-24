@@ -9,6 +9,11 @@ Vue.use(Vuex);
 
 const state = {
     series: [],
+    token: null,
+    wifi: { 
+        available: [], 
+        current: '', 
+    },
 }
 
 const getters = {
@@ -26,25 +31,55 @@ const getters = {
             return last[key];
         } 
         return 'NA';
-    }
+    },
+    isLogged: (state) => () => {
+        return (state.token !== null);
+    },
+    getToken: (state) => () => {
+        return state.token;
+    },
+    getWifiList: (state) => () => {
+        let wifis = state.wifi.available;
+        let filtered = wifis.filter(function(item, pos) {
+            return wifis.indexOf(item) == pos;
+        })
+        return filtered;
+    },
+    getCurrentWifi: (state) => () => {
+        return state.wifi.current;
+    },
 }
 
 const actions = {
     requestSeries({ commit }) {
-        Vue.http.get('data?format=json').then(response => {
+        Vue.http.get('series?format=json').then(response => {
             commit('setSeries', response.body);
         });
     },
     addRandomValues({ commit }) {
         commit('setSeries', [ { 'UTCUnixTime': 123123, 'TemperatureC': 26.0 } ]);
-    }
+    },
+    requestWifi({ commit }) {
+        let params = {
+            token: state.token,
+        };
+        Vue.http.get('wifi', { params }).then(response => {
+            commit('setWifi', response.body);
+        });
+    },
 }
 
 const mutations = {
     setSeries(state, data) {
         state.series.push(...data);
         state.series = state.series.slice(-SERIES_MAX_SIZE);
-    }
+    },
+    setAuth(state, token) {
+        state.token = token;
+    },
+    setWifi(state, data) {
+        state.wifi = data;
+    },
 }
 
 export default new Vuex.Store({
