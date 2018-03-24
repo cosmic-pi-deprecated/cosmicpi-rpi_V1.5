@@ -1,12 +1,10 @@
 <template>
-<div class="col-lg-6">
-    <div class="card card-default">
-        <div class="card-header">
-            <h5>{{ title }}</h5>
-        </div>
-        <div class="card-body">
-            <canvas ref="canvas" style="height:300px"></canvas>
-        </div>
+<div class="card card-default">
+    <div class="card-header">
+        <h5>{{ title }}</h5>
+    </div>
+    <div class="card-body">
+        <canvas ref="canvas" style="height:300px"></canvas>
     </div>
 </div>
 </template>
@@ -70,3 +68,9 @@ export default {
     },
 }
 </script>
+
+<style>
+.card {
+    margin-bottom: 20px;
+}
+</style>

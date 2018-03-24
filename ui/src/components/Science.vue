@@ -14,6 +14,7 @@
             </div>
         </div>
         <div class="row">
+            <img v-if="graphIsLoading" ref="loader" style="margin: auto" :src="loaderUrl" />
             <img ref="graph" style="width: 100%; height: 100%" />
         </div>
                 
@@ -30,7 +31,6 @@
 import { Datetime } from 'vue-datetime'
 import moment from 'moment';
 
-
 const FROM_DEFAULT = moment().add('-24', 'hours').toISOString();
 const TO_DEFAULT = moment().toISOString();
 
@@ -42,6 +42,8 @@ export default {
             to: TO_DEFAULT,
             lastFrom: FROM_DEFAULT,
             lastTo: TO_DEFAULT,
+            graphIsLoading: true,
+            loaderUrl: require('../assets/images/loader.gif'),
         }
     },
     components: {
@@ -50,6 +52,8 @@ export default {
     mounted() {
         this.loadGraphImage();
         this.updateDownloadUrl();
+
+        this.$refs.graph.onload = () => this.graphIsLoading = false;
     },
     methods: {
         rangeUpdated() {
@@ -75,6 +79,8 @@ export default {
             let root = this.$http.options.root;
             let binSize = 1;
 
+            this.$refs.graph.src = '';
+            this.graphIsLoading = true;
             let imageUrl = `${root}histogram.png?from=${from}&to=${to}&bin_size=${binSize}`;
             this.$refs.graph.src = imageUrl;
         },

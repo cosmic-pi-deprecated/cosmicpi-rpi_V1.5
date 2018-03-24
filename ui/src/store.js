@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import moment from 'moment';
 
 
-const SERIES_MAX_SIZE = 30;
+const SERIES_MAX_SIZE = 100;
 Vue.use(Vuex);
 
 
@@ -32,6 +32,15 @@ const getters = {
         } 
         return 'NA';
     },
+    getNumberOfEvents: (state) => () => {
+        return state.series.length;
+    },
+    getPeriod: (state) => () => {
+        if (state.series.length > 1) {
+            return state.series[state.series.length - 1].UTCUnixTime - state.series[0].UTCUnixTime;
+        } 
+        return 0;
+    },
     isLogged: (state) => () => {
         return (state.token !== null);
     },
@@ -52,7 +61,11 @@ const getters = {
 
 const actions = {
     requestSeries({ commit }) {
-        Vue.http.get('series?format=json').then(response => {
+        let params = {
+            format: 'json',
+            limit: SERIES_MAX_SIZE,
+        };
+        Vue.http.get('series', { params }).then(response => {
             commit('setSeries', response.body);
         });
     },
@@ -71,7 +84,15 @@ const actions = {
 
 const mutations = {
     setSeries(state, data) {
-        state.series.push(...data);
+        data.sort((l, r) => l.UTCUnixTime + l.SubSeconds > r.UTCUnixTime + r.SubSeconds ? 1 : -1);
+        for (let item of data) {
+            let last = state.series[state.series.length - 1];
+            let lastUTCUnixTime = last ? last.UTCUnixTime : 0;
+            let lastSubSeconds = last ? last.SubSeconds : 0;
+            if (item.UTCUnixTime + item.SubSeconds >= lastUTCUnixTime + lastSubSeconds) {
+                state.series.push(item);
+            }
+        }
         state.series = state.series.slice(-SERIES_MAX_SIZE);
     },
     setAuth(state, token) {
