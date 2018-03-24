@@ -1,15 +1,17 @@
+#!/usr/bin/env python
+
 '''
 This program will clean the sqlite database every now and then to keep it from exploding.
 
 '''
 
-
 import time
 import sqlite3
-import configparser
 import random
-
+from cosmicpi.config import Config as config
 import logging as log
+
+
 log.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log.INFO)
 
 
@@ -25,15 +27,12 @@ def _initilize_DB(_sqlite_location):
         _db_conn.commit()
 
 
-# settings files
-CONFIG_FILE = "../config/CosmicPi.config"
+
 
 # read configuration
 # Todo: Put the config parser into a propper class
 # Todo: Implement proper error catching for configparser (e.g. non existent keys or file)
 # read configuration
-config = configparser.ConfigParser()
-config.read(CONFIG_FILE)
 sqlite_location = config.get("Storage", "sqlite_location")
 max_event_age = config.getint("Storage", "sqlite_max_event_age") * 60. * 60.    # here used in seconds
 

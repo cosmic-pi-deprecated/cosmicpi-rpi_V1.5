@@ -1,0 +1,10 @@
+[Unit]
+Description=Software for the CosmicPi UI
+
+[Service]
+ExecStart=PYTHONPATH=/home/pi/cosmicpi-rpi_V1.5/ /home/pi/cosmicpi-rpi_V1.5/bin/ui
+WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

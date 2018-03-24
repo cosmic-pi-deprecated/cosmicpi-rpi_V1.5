@@ -1,13 +1,19 @@
 from flask import request
 from flask_restful import Resource
-from .config import Config
+from cosmicpi.config import Config
 from .auth import requires_auth
 import subprocess
 import re
 import time
-import thread
-import urllib2
 from functools import wraps
+try:
+    import thread
+except:
+    import _thread as thread
+try:
+    import urllib2
+except:
+    import urllib3 as urllib2
 
 
 DEFAULT_WIFI_NAME = Config.get("Default WiFi", "name")

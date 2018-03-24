@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import io
 import sqlite3
-from .config import Config
+from cosmicpi.config import Config
 
 
 SQLITE_LOCATION = Config.get("Storage", "sqlite_location")

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 '''
 This program manages the connection to an attached detector.
 
@@ -18,7 +20,7 @@ import sqlite3
 import copy
 import datetime
 from serial import SerialException
-import configparser
+from cosmicpi.config import Config as config
 
 import logging as log
 log.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log.INFO)
@@ -292,15 +294,10 @@ class CosmicPi_V15(detector, threading.Thread):
 #det = detector("Test1", "TestVersion1", config_sqlite_location)
 #det._commit_event_dict(det._example_event_dict)
 
-# settings files
-CONFIG_FILE = "../config/CosmicPi.config"
-
 # read configuration
 # Todo: Put the config parser into a propper class
 # Todo: Implement proper error catching for configparser (e.g. non existent keys or file)
 # read configuration
-config = configparser.ConfigParser()
-config.read(CONFIG_FILE)
 detector_class = config.get("Detector", "detector_class")
 sqlite_location = config.get("Storage", "sqlite_location")
 

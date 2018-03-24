@@ -2,8 +2,8 @@
 Description=Software for cleaning the local database from time to time, to keep it from exploding
 
 [Service]
-ExecStart=/usr/bin/python /home/pi/cosmicpi-rpi_V1.5/backend/database_cleaning.py
-WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/backend/
+ExecStart=PYTHONPATH=/home/pi/cosmicpi-rpi_V1.5/ /home/pi/cosmicpi-rpi_V1.5/bin/dbcleaner
+WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/
 Restart=on-failure
 
 [Install]

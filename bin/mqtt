@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 '''
 This program will check the database about every minute to search for a new event.
 If one is found it will be sent to an mqtt server
@@ -13,6 +15,7 @@ import json
 import subprocess
 import socket
 import struct
+from cosmicpi.config import Config as config
 
 import logging as log
 log.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log.INFO)
@@ -67,15 +70,11 @@ def send_via_mqtt(broker_address, broker_topic, message):
     # ToDo: This is unsafe, though there should be no user data here the risk of code injection is low.
     subprocess.call(execution_string, shell=True)
 
-# settings files
-CONFIG_FILE = "../config/CosmicPi.config"
 
 # read configuration
 # Todo: Put the config parser into a propper class
 # Todo: Implement proper error catching for configparser (e.g. non existent keys or file)
 # read configuration
-config = configparser.ConfigParser()
-config.read(CONFIG_FILE)
 sqlite_location = config.get("Storage", "sqlite_location")
 broker_address = config.get("MQTT", "broker_address")
 broker_topic = "{}/{}".format(config.get("MQTT", "broker_topic"), getserial())

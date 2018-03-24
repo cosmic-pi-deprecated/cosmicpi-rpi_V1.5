@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, abort
-from .config import Config
+from cosmicpi.config import Config
 from functools import wraps
 
 

@@ -1,6 +1,6 @@
 from flask import request, make_response
 from flask_restful import Resource
-from .config import Config
+from cosmicpi.config import Config
 import sqlite3
 import io
 import csv

@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+from flask import send_from_directory
+from cosmicpi.rest.app import create_app
+import cosmicpi.ui
+import os
+
+
+path = os.path.abspath(cosmicpi.ui.__file__)
+UI_DIR = os.path.dirname(path)
+
+
+if __name__ == '__main__':
+    app = create_app()
+
+    @app.route('/dist/<path:path>')
+    def serve_page(path):
+        return send_from_directory(os.path.join(UI_DIR, 'dist'), path)
+
+    @app.route('/')
+    def server_index():
+        return send_from_directory(UI_DIR, 'index.html')
+
+    app.run(debug=True, host='0.0.0.0')
