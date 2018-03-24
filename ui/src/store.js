@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import moment from 'moment';
 
 
-const SERIES_MAX_SIZE = 100;
+const SERIES_MAX_SIZE = 50;
 Vue.use(Vuex);
 
 
@@ -89,7 +89,7 @@ const mutations = {
             let last = state.series[state.series.length - 1];
             let lastUTCUnixTime = last ? last.UTCUnixTime : 0;
             let lastSubSeconds = last ? last.SubSeconds : 0;
-            if (item.UTCUnixTime + item.SubSeconds >= lastUTCUnixTime + lastSubSeconds) {
+            if (item.UTCUnixTime + item.SubSeconds > lastUTCUnixTime + lastSubSeconds) {
                 state.series.push(item);
             }
         }

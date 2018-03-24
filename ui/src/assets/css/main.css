@@ -116,3 +116,7 @@ hr {
     padding: 20px;
     border-radius: 5px; 
 }
+
+.card-narrow {
+    padding: 5px !important;
+}

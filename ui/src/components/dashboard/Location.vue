@@ -3,7 +3,7 @@
     <div class="card-header">
         <h5>Location</h5>
     </div>
-    <div class="card-body">
+    <div class="card-body card-narrow">
         <iframe class="google-map" ref="map" :src=googleMapsUrl></iframe>
     </div>
 </div>

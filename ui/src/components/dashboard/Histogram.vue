@@ -2,17 +2,21 @@
 <div class="card card-default">
     <div class="card-header">
         <h5>Histogram</h5>
-        <p class="small">
-            Showing data in period {{from}} - {{to}} ({{period}}s), 
-            <b>{{ numberOfEvents }}</b> events with
-            bin size <b>{{ binSize }}s</b>
-        </p>
+        <div class="row">
+            <div class="col-10">
+                <p class="small">
+                    Showing data in period {{from}} - {{to}} ({{period}}s), 
+                    <b>{{ numberOfEvents }}</b> events with
+                    bin size <b>{{ binSize }}s</b>
+                </p>
+            </div>
+            <div class="col-2">
+                <input v-model="binSize" class="form-control" min="1" type="number"/>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
+    <div class="card-body card-narrow">
         <canvas ref="canvas" style="height:300px"></canvas>
-    </div>
-    <div class="card-footer">
-        <input v-model="binSize" class="form-control" min="1" type="number"/>
     </div>
 </div>
 </template>
