@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import moment from 'moment';
 
 
-const SERIES_MAX_SIZE = 50;
+const SERIES_MAX_SIZE = 100;
 Vue.use(Vuex);
 
 
@@ -27,8 +27,7 @@ const getters = {
     },
     getLastValue: (state) => (key) => {
         if (state.series.length > 0) {
-            let last = state.series.reduce((l, e) => e.UTCUnixTime > l.UTCUnixTime ? e : l);
-            return last[key];
+            return state.series[state.series.length - 1][key];
         } 
         return 'NA';
     },
@@ -64,13 +63,11 @@ const actions = {
         let params = {
             format: 'json',
             limit: SERIES_MAX_SIZE,
+            from: state.series.length > 0 ? state.series[state.series.length - 1].UTCUnixTime : 0,
         };
         Vue.http.get('series', { params }).then(response => {
             commit('setSeries', response.body);
         });
-    },
-    addRandomValues({ commit }) {
-        commit('setSeries', [ { 'UTCUnixTime': 123123, 'TemperatureC': 26.0 } ]);
     },
     requestWifi({ commit }) {
         let params = {

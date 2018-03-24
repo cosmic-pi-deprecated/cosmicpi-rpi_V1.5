@@ -85,6 +85,10 @@ export default {
   },
   beforeCreate() {
     this.$store.dispatch('requestSeries');
+
+    setInterval(function() {
+      this.$store.dispatch('requestSeries');
+    }.bind(this), 5000); 
   },
 }
 </script>
