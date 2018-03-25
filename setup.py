@@ -6,14 +6,14 @@ import os
 class PostInstall(install):
     def run(self):
         install.run(self)
-        os.system('cosmicpi-postinstall')
+        #os.system('cosmicpi-postinstall')
 
 
 setup(name='cosmicpi',
     version='1.5.2',
     description='Open source cosmic ray detector',
     long_description='The Cosmic Pi project aims to build the world\'s largest open source distributed cosmic ray telescope. You too can be a part of the project, by becoming a Cosmic Pixel!',
-    platforms=["noarch"],
+    platforms=['noarch'],
     maintainer='Cosmic Pi Team',
     maintainer_email='info@cosmicpi.org',
     url='http://cosmicpi.org/',
@@ -24,8 +24,12 @@ setup(name='cosmicpi',
         'cosmicpi.storage',
         'cosmicpi.ui',
     ],
+    package_data={
+        'cosmicpi.ui': ['dist/*', 'index.html'],
+        'cosmicpi.storage': ['cosmicpi.sqlite3'],
+    },
     data_files=[
-        # ('/etc/systemd/system/', ['data_files/*.service']),
+        ('/etc/systemd/system/', ['data_files/*.service']),
         ('/etc', ['data_files/cosmicpi.config']),
     ],
     install_requires=[

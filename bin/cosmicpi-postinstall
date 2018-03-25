@@ -25,5 +25,5 @@ echo "--- and placed in the public domain. For license details see:             
 echo "--- https://creativecommons.org/share-your-work/public-domain/cc0/                       ---"             
 
 
-sleep 60
-sudo reboot now
+# sleep 60
+# sudo reboot now
