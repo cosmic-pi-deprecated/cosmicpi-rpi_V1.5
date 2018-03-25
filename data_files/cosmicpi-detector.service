@@ -2,8 +2,7 @@
 Description=Software for connecting to the the CosmicPi detector
 
 [Service]
-ExecStart=PYTHONPATH=/home/pi/cosmicpi-rpi_V1.5/ /home/pi/cosmicpi-rpi_V1.5/bin/detector
-WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/
+ExecStart=/usr/bin/cosmicpi-detector
 Restart=on-failure
 
 [Install]

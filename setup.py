@@ -29,7 +29,12 @@ setup(name='cosmicpi',
         'cosmicpi.storage': ['cosmicpi.sqlite3'],
     },
     data_files=[
-        ('/etc/systemd/system/', ['data_files/*.service']),
+        ('/etc/systemd/system/', [
+            'data_files/cosmicpi-ui.service',
+            'data_files/cosmicpi-mqtt.service',
+            'data_files/cosmicpi-detector.service',
+            'data_files/cosmicpi-dbcleaner.service',
+        ]),
         ('/etc', ['data_files/cosmicpi.config']),
     ],
     install_requires=[

@@ -2,8 +2,7 @@
 Description=Software for sending locally stored events from the CosmicPi to an MQTT srver
 
 [Service]
-ExecStart=PYTHONPATH=/home/pi/cosmicpi-rpi_V1.5/ /home/pi/cosmicpi-rpi_V1.5/bin/mqtt
-WorkingDirectory=/home/pi/cosmicpi-rpi_V1.5/
+ExecStart=/usr/bin/cosmicpi-mqtt
 Restart=on-failure
 
 [Install]
