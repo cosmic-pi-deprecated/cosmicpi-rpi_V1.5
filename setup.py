@@ -34,6 +34,8 @@ setup(name='cosmicpi',
         'flask',
         'configparser',
         'pyserial',
+        'flask_restful',
+        'flask_cors',
     ],
     scripts=[
         'bin/cosmicpi-dbcleaner',
