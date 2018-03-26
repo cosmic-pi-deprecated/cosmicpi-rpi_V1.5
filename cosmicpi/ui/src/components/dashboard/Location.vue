@@ -1,5 +1,5 @@
 <template>
-<div class="card card-default">
+<div class="card card-default card-margin">
     <div class="card-header">
         <h5>Location</h5>
     </div>

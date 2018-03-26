@@ -1,5 +1,5 @@
 <template>
-<div class="card card-default">
+<div class="card card-default card-margin">
     <div class="card-header">
         <h5>Histogram</h5>
         <div class="row">
@@ -31,7 +31,6 @@ const DEFAULT_BIN_SIZE = 1;
 
 export default {
     name: 'Histogram',
-    props: ['title', 'dkey'],
     data() {
         return {
             chart: null,
@@ -80,19 +79,28 @@ export default {
             data: {
                 labels: this.times,
                 datasets: [{
-                    label: this.title,
-                    data: this.values,
+                    // label: 'Number of events',
                     backgroundColor: "rgba(153,51,255,0.4)"
                 }]
             },
             options: {
                 animation: false,
                 legend: {
-                    display: false
+                    display: false,
                 },
                 scales: {
                     xAxes: [{
-                        display: false
+                        display: false,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time',
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Number of events'
+                        }
                     }]
                 },
             },
@@ -104,9 +112,5 @@ export default {
 <style>
 .small {
     font-size: 12px;
-}
-
-.card {
-    margin-bottom: 20px;
 }
 </style>

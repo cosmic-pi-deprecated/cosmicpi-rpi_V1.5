@@ -117,3 +117,7 @@ hr {
 .card-narrow {
     padding: 5px !important;
 }
+
+.card-margin {
+    margin-bottom: 20px !important;
+}
