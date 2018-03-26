@@ -15,6 +15,10 @@
                         <label for="toDate">To date:</label>
                         <datetime @input="rangeUpdated" v-model="to" id="toDate" type="datetime" input-class="form-control"></datetime>
                     </div>
+                    <div class="form-group col">
+                        <label for="binSize">Bin size (s):</label>
+                        <input type="number" min="1" @change="binSizeUpdated" v-model="binSize" id="binSize" class="form-control" />
+                    </div>
                 </div>
                 <div class="row">
                     <img v-if="graphIsLoading" ref="loader" style="margin: auto" :src="loaderUrl" />
@@ -38,11 +42,14 @@ import moment from 'moment';
 
 const FROM_DEFAULT = moment().add('-24', 'hours').toISOString();
 const TO_DEFAULT = moment().toISOString();
+const DEFAULT_BIN_SIZE = 1;
 
 export default {
     name: 'Science',
     data() {
         return {
+            binSize: DEFAULT_BIN_SIZE,
+            lastBinSize: DEFAULT_BIN_SIZE,
             from: FROM_DEFAULT,
             to: TO_DEFAULT,
             lastFrom: FROM_DEFAULT,
@@ -70,6 +77,12 @@ export default {
                 this.updateDownloadUrl();
             }
         },
+        binSizeUpdated() {
+            if (this.lastBinSize != this.binSize) {
+                this.lastBinSize = this.binSize;
+                this.loadGraphImage();
+            }
+        },
         updateDownloadUrl() {
             let from = moment(this.from).unix();
             let to = moment(this.to).unix();
@@ -82,11 +95,10 @@ export default {
             let from = moment(this.from).unix();
             let to = moment(this.to).unix();
             let root = this.$http.options.root;
-            let binSize = 1;
 
             this.$refs.graph.src = '';
             this.graphIsLoading = true;
-            let imageUrl = `${root}histogram.png?from=${from}&to=${to}&bin_size=${binSize}`;
+            let imageUrl = `${root}histogram.png?from=${from}&to=${to}&bin_size=${this.binSize}`;
             this.$refs.graph.src = imageUrl;
         },
     },

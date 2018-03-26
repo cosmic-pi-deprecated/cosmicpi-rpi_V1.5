@@ -1,5 +1,12 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+
+
+const DEFAULT_API_URL = (process.env.NODE_ENV === 'production') ? 
+  '/api/' : 'http://192.168.1.26:5000/api/';
+const API_URL = (process.env.API_URL === undefined) ?
+  DEFAULT_API_URL : process.env.API_URL;
+
 
 module.exports = {
   entry: './src/main.js',
@@ -69,8 +76,7 @@ module.exports = {
   devtool: '#eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
-      'API_URL': JSON.stringify(process.env.NODE_ENV === 'production' ? 
-        '/api/' : 'http://192.168.1.26:5000/api/'),
+      'API_URL': JSON.stringify(API_URL),
     })
   ]
 }
