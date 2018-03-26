@@ -11,13 +11,18 @@ class PostInstall(install):
 
 setup(name='cosmicpi',
     version='1.5.2',
-    description='Open source cosmic ray detector',
-    long_description='The Cosmic Pi project aims to build the world\'s largest open source distributed cosmic ray telescope. You too can be a part of the project, by becoming a Cosmic Pixel!',
+    description='UI for the CosmicPi cosmic ray detector',
+    long_description='This software provides the user interface, temporary storage and connection to the internet storage for the detectors of the CosmicPi project. The Cosmic Pi project aims to build the world\'s largest open source distributed cosmic ray telescope. You too can be a part of the project, by becoming a Cosmic Pixel!',
     platforms=['noarch'],
     maintainer='Cosmic Pi Team',
     maintainer_email='info@cosmicpi.org',
     url='http://cosmicpi.org/',
     license='GPL V2',
+    project_urls={
+        "Bug Tracker": "https://github.com/CosmicPi/cosmicpi-rpi_V1.5/issues",
+        "Documentation": "https://github.com/CosmicPi/cosmicpi-rpi_V1.5/blob/master/README.md",
+        "Source Code": "https://github.com/CosmicPi/cosmicpi-rpi_V1.5",
+    },
     packages=[
         'cosmicpi',
         'cosmicpi.rest',
