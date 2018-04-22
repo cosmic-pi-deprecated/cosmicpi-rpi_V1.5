@@ -36,9 +36,13 @@ POSTINSTALL = """
     # Hope an OS uses systemd (not SysVinit or similar)
     sudo systemctl daemon-reload
     sudo systemctl enable cosmicpi-mqtt.service
+    sudo systemctl start cosmicpi-mqtt.service
     sudo systemctl enable cosmicpi-dbcleaner.service
+    sudo systemctl start cosmicpi-dbcleaner.service
     sudo systemctl enable cosmicpi-detector.service
+    sudo systemctl start cosmicpi-detector.service
     sudo systemctl enable cosmicpi-ui.service
+    sudo systemctl start cosmicpi-ui.service
 
     echo "--- Finished setup! Rebooting now, when this is done your Cosmic Pi should start working ---"
     echo "--- To connect go to the IP address assigned by your network to the CosmicPi device, or  ---"
