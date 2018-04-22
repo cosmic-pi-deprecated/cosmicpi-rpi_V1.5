@@ -3,8 +3,12 @@ from setuptools.command.install import install
 import os
 
 
-# NOTE: Installation requires: python-setuptools (`sudo apt install python-setuptools`)
-# INSTALL: `sudo python setup.py install`
+# Development
+# Install requirements: python-setuptools (`sudo apt install python-setuptools`)
+# Run installation command: `sudo python setup.py install`
+
+# Installation
+# `sudo pip install cosmicpi`
 
 
 PREINSTALL = """

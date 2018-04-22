@@ -1,5 +1,7 @@
 # Cosmic Pi Software on the Raspberry Pi
 
+[![Build Status](https://travis-ci.org/CosmicPi/cosmicpi-rpi_V1.5.svg?branch=rest)](https://travis-ci.org/CosmicPi/cosmicpi-rpi_V1.5)
+
 This software runs on the raspberry pi, which is integral to the CosmicPi V1.5.
 The central point is a SQLite database into which data is stored, as well as read from.
 More instructions will follow when the software has reached the state of the V2 mock-up software.
