@@ -4,3 +4,12 @@ python:
   - "3.6"
 install:
   - sudo python setup.py install
+script:
+  - true
+#deploy:
+#  provider: pypi
+#  user: lukicdarkoo
+#  password:
+#    secure: ??????
+#  on:
+#    tags: true
