@@ -3,6 +3,10 @@ from setuptools.command.install import install
 import os
 
 
+# NOTE: Installation requires: python-setuptools (`sudo apt install python-setuptools`)
+# INSTALL: `sudo python setup.py install`
+
+
 PREINSTALL = """
     # Check if OS has `apt` command
     if [ "$(command -v apt)" != '' ]; then
