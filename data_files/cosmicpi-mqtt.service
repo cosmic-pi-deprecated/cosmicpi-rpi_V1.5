@@ -2,7 +2,7 @@
 Description=Software for sending locally stored events from the CosmicPi to an MQTT srver
 
 [Service]
-ExecStart=/usr/bin/cosmicpi-mqtt
+ExecStart=/bin/sh -c 'cosmicpi-mqtt'
 Restart=on-failure
 
 [Install]

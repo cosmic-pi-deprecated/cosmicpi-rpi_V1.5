@@ -2,7 +2,7 @@
 Description=Software for the CosmicPi UI
 
 [Service]
-ExecStart=/usr/bin/cosmicpi-ui
+ExecStart=/bin/sh -c 'cosmicpi-ui'
 Restart=on-failure
 
 [Install]

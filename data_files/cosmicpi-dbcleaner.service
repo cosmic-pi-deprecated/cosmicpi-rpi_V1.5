@@ -2,7 +2,7 @@
 Description=Software for cleaning the local database from time to time, to keep it from exploding
 
 [Service]
-ExecStart=/usr/bin/cosmicpi-dbcleaner
+ExecStart=/bin/sh -c 'cosmicpi-dbcleaner'
 Restart=on-failure
 
 [Install]

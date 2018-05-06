@@ -2,7 +2,7 @@
 Description=Software for connecting to the the CosmicPi detector
 
 [Service]
-ExecStart=/usr/bin/cosmicpi-detector
+ExecStart=/bin/sh -c 'cosmicpi-detector'
 Restart=on-failure
 
 [Install]
