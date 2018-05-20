@@ -38,7 +38,6 @@ PREINSTALL = """
 POSTINSTALL = """
     echo "--- Setting up services"
     # Hope an OS uses systemd (not SysVinit or similar)
-    sudo systemctl daemon-reload
     sudo systemctl enable cosmicpi-mqtt.service
     sudo systemctl start cosmicpi-mqtt.service
     sudo systemctl enable cosmicpi-dbcleaner.service
@@ -47,6 +46,7 @@ POSTINSTALL = """
     sudo systemctl start cosmicpi-detector.service
     sudo systemctl enable cosmicpi-ui.service
     sudo systemctl start cosmicpi-ui.service
+    sudo systemctl daemon-reload
 
     echo "--- Finished setup! Rebooting now, when this is done your Cosmic Pi should start working ---"
     echo "--- To connect go to the IP address assigned by your network to the CosmicPi device, or  ---"
@@ -68,7 +68,7 @@ class PrePostInstall(install):
 
 
 setup(name='cosmicpi',
-    version='1.5.3',
+    version='1.5.4',
     description='UI for the CosmicPi cosmic ray detector',
     long_description='This software provides the user interface, temporary storage and connection to the internet storage for the detectors of the CosmicPi project. The Cosmic Pi project aims to build the world\'s largest open source distributed cosmic ray telescope. You too can be a part of the project, by becoming a Cosmic Pixel!',
     platforms=['noarch'],
@@ -99,9 +99,7 @@ setup(name='cosmicpi',
             'data_files/cosmicpi-dbcleaner.service',
         ]),
         ('/etc', [
-            'data_files/cosmicpi.config', 
-            'data_files/dhcpcd.conf', 
-            'data_files/dnsmasq.conf'
+            'data_files/cosmicpi.config',
             ]
         ),
     ],
