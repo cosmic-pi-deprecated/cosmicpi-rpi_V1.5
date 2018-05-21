@@ -90,6 +90,4 @@ network={
                 'message': 'Great! Your are not connected to %s and you can access to ' \
                 'this web panel on http://%s/' % (ssid, new_ip),
             }
-        return {
-            'message': 'Something went wrong, unable to connect :(',
-        }
+        return { 'message': 'Something went wrong, unable to connect :(' }

@@ -32,7 +32,7 @@ From the Raspberry Pi itself the application is available at:
 
 When used as an access point the application is available at:
 
-`http://cosmicpi.local/` or `http://10.0.0.1/`
+`http://cosmicpi.local/` or `http://192.168.10.1/`
 
 #### Debugging the software:
 Stop all mentioned services. After this you should be able to run the software directly via the commandline.
