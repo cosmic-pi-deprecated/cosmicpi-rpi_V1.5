@@ -1,5 +1,7 @@
 from setuptools import setup
 from setuptools.command.install import install
+from setuptools.command.develop import develop
+from setuptools.command.egg_info import egg_info
 import os
 
 
@@ -60,15 +62,29 @@ POSTINSTALL = """
 """
 
 
-class PrePostInstall(install):
+class CustomInstallCommand(install):
     def run(self):
         os.system(PREINSTALL)
         install.run(self)
         os.system(POSTINSTALL)
 
 
+class CustomDevelopCommand(develop):
+    def run(self):
+        os.system(PREINSTALL)
+        develop.run(self)
+        os.system(POSTINSTALL)
+
+
+class CustomEggInfoCommand(egg_info):
+    def run(self):
+        os.system(PREINSTALL)
+        egg_info.run(self)
+        os.system(POSTINSTALL)
+
+
 setup(name='cosmicpi',
-    version='1.5.4',
+    version='1.5.6',
     description='UI for the CosmicPi cosmic ray detector',
     long_description='This software provides the user interface, temporary storage and connection to the internet storage for the detectors of the CosmicPi project. The Cosmic Pi project aims to build the world\'s largest open source distributed cosmic ray telescope. You too can be a part of the project, by becoming a Cosmic Pixel!',
     platforms=['noarch'],
@@ -92,7 +108,7 @@ setup(name='cosmicpi',
         'cosmicpi.storage': ['cosmicpi.sqlite3'],
     },
     data_files=[
-        ('/etc/systemd/system/', [
+        ('/etc/systemd/system', [
             'data_files/cosmicpi-ui.service',
             'data_files/cosmicpi-mqtt.service',
             'data_files/cosmicpi-detector.service',
@@ -120,6 +136,8 @@ setup(name='cosmicpi',
         'bin/cosmicpi-ui',
     ],
     cmdclass={
-        'install': PrePostInstall,
+        'install': CustomInstallCommand,
+        'develop': CustomDevelopCommand,
+        'egg_info': CustomEggInfoCommand,
     },
 )

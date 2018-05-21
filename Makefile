@@ -1,7 +1,8 @@
-publish:
-	pip install twine
-	python setup.py sdist
-	twine upload dist/*
+clean:
+	rm -rf dist cosmicpi.egg-info build
+
+publish: clean
+	python setup.py sdist upload
 
 ci-publish:
 	echo '[pypi]' > ~/.pypirc
