@@ -76,7 +76,7 @@ network={
     """ % (ssid, psk)
         with open(WPA_SUPPLICANT_LOCATION, 'w') as file:
             file.write(wpa_supplicant_content)
-        os.system('sudo ifdown wlan0 --force; sudo ifup wlan0; wpa_supplicant -i wlan0 -c %s' % WPA_SUPPLICANT_LOCATION)
+        os.system('sudo ifdown --force wlan0; sudo ifup wlan0')
 
         # Get new IP
         new_ip = subprocess.check_output(
