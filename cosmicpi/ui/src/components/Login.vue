@@ -17,7 +17,7 @@
                     <input type="text" ref="username" value="cosmicpi" class="form-control" placeholder="Username">
                 </div>
                 <div class="form-group">
-                    <input type="password" ref="password" value="MuonsFROMSp8ce" class="form-control" placeholder="Password">
+                    <input type="password" ref="password" value="" class="form-control" placeholder="Password">
                 </div>
                 <button type="submit" ref="submit" class="btn btn-primary btn-lg btn-block">Login</button>
             </form>
