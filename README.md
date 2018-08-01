@@ -14,7 +14,7 @@ pip install cosmicpi
 
 If you have scratch Raspbian image and you want to install software, expand filesystem, configure AP... please use:
 ```
-curl https://gist.githubusercontent.com/lukicdarkoo/e33e00c6780ad0215d3932b810a10e46/raw | sh
+curl http://cosmicpi.org/configure | sh
 ```
 
 
