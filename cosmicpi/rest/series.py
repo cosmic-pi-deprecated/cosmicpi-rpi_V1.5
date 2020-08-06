@@ -13,13 +13,12 @@ class Series(Resource):
     def __init__(self):
         self._cpuserial = "0000000000000000"
         try:
-            f = open('/proc/cpuinfo','r')
-            for line in f:
-                if line[0:6]=='Serial':
-                    self._cpuserial = line[10:26]
-                    f.close()
+            with open('/proc/cpuinfo','r') as f:
+                for line in f:
+                    if line[0:6]=='Serial':
+                        self._cpuserial = line[10:26]
         except:
-            self._cpuserial = "ERROR000000000"
+            self._cpuserial = "ERROR100000000"
 
     def get(self):
         format = request.args['format']

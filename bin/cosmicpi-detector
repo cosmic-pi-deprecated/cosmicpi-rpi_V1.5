@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 '''
 This program manages the connection to an attached detector.
@@ -23,14 +23,15 @@ from serial import SerialException
 from cosmicpi.config import Config as config
 
 import logging as log
+
 log.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log.INFO)
 
 
 class detector():
     # vars that are the same for all detectors
     _db_keys = ["UTCUnixTime", "SubSeconds", "TemperatureC", "Humidity",
-                     "AccelX", "AccelY", "AccelZ", "MagX", "MagY", "MagZ",
-                     "Pressure", "Longitude", "Latitude"]
+                "AccelX", "AccelY", "AccelZ", "MagX", "MagY", "MagZ",
+                "Pressure", "Longitude", "Latitude"]
     _example_event_dict = {
         "UTCUnixTime": 0,
         "SubSeconds": 0.0,
@@ -91,13 +92,14 @@ class detector():
 
         # send and commit the changes
         cursor.execute(insert_string, insert_vals)
+        # log.info("inserted line")
         self._db_conn.commit()
-
+        # log.info("Added event to database")
 
 
 class CosmicPi_V15(detector, threading.Thread):
-    def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, enable_raw_output=False):
-        detector.__init__(self, "CosmicPiV1.5", "1.5.1", sqlite_location)
+    def __init__(self, serial_port, baud_rate, sqlite_location, timeout=10, enable_raw_output=True):
+        detector.__init__(self, "CosmicPiV1.7", "1.7.1", sqlite_location)
         # todo: put the thread inheritance one higher
         threading.Thread.__init__(self)
         # initilize the needed data structures
@@ -109,7 +111,7 @@ class CosmicPi_V15(detector, threading.Thread):
         self._time_from_gps = datetime.datetime(2000, 1, 2, 3, 4, 5, tzinfo=None)
         # store init values
         self.serial_port = serial_port
-        self.baud_rate = baud_rate
+        self.baud_rate = 115200
         self.timeout = timeout
         # setup the writing onto disk
         self.enable_raw_output = enable_raw_output
@@ -147,7 +149,7 @@ class CosmicPi_V15(detector, threading.Thread):
         while True:
             event_bool = False
             # read lines from serial and parse them
-            #log.info("Reading line")
+            # log.info("Reading line")
             event_bool = self._read_parse_and_check_for_event()
 
             # when there is an event store it
@@ -161,10 +163,12 @@ class CosmicPi_V15(detector, threading.Thread):
             line = self.ser.readline()
             log.debug("Waiting serial input bytes: " + str(self.ser.inWaiting()))
         except SerialException as e:
-            log.critical("Received a SerialException while reading the serial port (somebody probably unplugged the cable). Printing error:")
+            log.critical(
+                "Received a SerialException while reading the serial port (somebody probably unplugged the cable). Printing error:")
             log.critical(e)
             raise RuntimeError("The detector can not function without a serial connection.")
         line_str = str(line)
+        # log.info(line_str)
         if self.enable_raw_output is True:
             self._ouput_file_handler.write(line_str)
 
@@ -172,7 +176,7 @@ class CosmicPi_V15(detector, threading.Thread):
         try:
             # get output data_type
             data_type = line_str.split(':')[0]
-
+            # log.info(data_type)
             # check if we have the type in our event dict
             if data_type in self._event_dict.keys():
                 # do a second sanity check
@@ -203,7 +207,7 @@ class CosmicPi_V15(detector, threading.Thread):
                 # sanity check
                 if not (line_str.count(',') == 6):
                     return False
-                g_time_string = line_str.split(',')[1].split('.')[0]    # has format hhmmss
+                g_time_string = line_str.split(',')[1].split('.')[0]  # has format hhmmss
                 hour = int(g_time_string[0:2])
                 minute = int(g_time_string[2:4])
                 second = int(g_time_string[4:6])
@@ -217,7 +221,7 @@ class CosmicPi_V15(detector, threading.Thread):
                                                         minute,
                                                         second,
                                                         tzinfo=None)
-                self._event_dict['UTCUnixTime'] = (self._time_from_gps - datetime.datetime(1970,1,1)).total_seconds()
+                self._event_dict['UTCUnixTime'] = (self._time_from_gps - datetime.datetime(1970, 1, 1)).total_seconds()
                 self._event_dict_confirmed['UTCUnixTime'] = True
                 return False
 
@@ -248,13 +252,12 @@ class CosmicPi_V15(detector, threading.Thread):
                 self._event_dict_confirmed['Longitude'] = True
                 return False
 
-
-            #log.info(str(self._event_dict_confirmed))
+            # log.info(str(self._event_dict_confirmed))
             # do a pre check if we have all data for a full event stack
-            if self._gps_ok == False:
-                return False
+            # if self._gps_ok == False:
+            #    return False
             # Don't do this check at the moment, it is annoying for development
-            #if not self._all_data_collected:
+            # if not self._all_data_collected:
             #    for element in self._event_dict_confirmed:
             #        if bool(self._event_dict_confirmed[element]) == False:
             #            return False
@@ -264,35 +267,43 @@ class CosmicPi_V15(detector, threading.Thread):
 
             # check if we have an event
             if data_type == "Event":
+                # log.info("Event Subroutine")
                 # sanity check
-                if not( (line_str.count(':')==3) and (line_str.count(';')==1) ):
+                if not ((line_str.count(':') == 3) and (line_str.count(';') == 1)):
                     return False
                 sub_sec_string = line_str.split(':')[2]
                 sub_sec_string = sub_sec_string.split(';')[0]
                 # check if we are using the old or new event format
-                if sub_sec_string.count('/') == 0:
-                    # this is the old format using the micros function, so we simply divide by 1000000.0
-                    current_subSeconds = float(sub_sec_string) / 1000000.0
-                elif sub_sec_string.count('/') == 1:
+                # if sub_sec_string.count('/') == 0:
+                # this is the old format using the micros function, so we simply divide by 1000000.0
+                #    current_subSeconds = float(sub_sec_string) / 1000000.0
+                if sub_sec_string.count('/') == 1:
                     # this is the newer format and we need to divide the first number by the second one
                     divisors = sub_sec_string.split('/')
                     current_subSeconds = float(divisors[0]) / float(divisors[1])
+
                 # make sure we are actually seeing something new
-                if (self._event_dict['SubSeconds'] == current_subSeconds):
-                    return False
-                else:
-                    self._event_dict['SubSeconds'] = current_subSeconds
-                    return True
-            return False
+                # if (self._event_dict['SubSeconds'] == current_subSeconds):
+                #    log.info("Repeat Event - Rejected")
+                #    return False
+                # else:
+                self._event_dict['SubSeconds'] = current_subSeconds
+                # log.info("Event Accepted")
+                return True
+            # return False
         except IndexError as e:
-            log.warning("Omitting a line, due to: Error while accessing the result of splitting the following line:" + str(line_str))
+            log.warning(
+                "Omitting a line, due to: Error while accessing the result of splitting the following line:" + str(
+                    line_str))
             return False
         except ValueError as e:
-            log.warning("Omitting a line, due to: Error while converting a number from the following line: " + str(line_str))
+            log.warning(
+                "Omitting a line, due to: Error while converting a number from the following line: " + str(line_str))
             return False
 
-#det = detector("Test1", "TestVersion1", config_sqlite_location)
-#det._commit_event_dict(det._example_event_dict)
+
+# det = detector("Test1", "TestVersion1", config_sqlite_location)
+# det._commit_event_dict(det._example_event_dict)
 
 # read configuration
 # Todo: Put the config parser into a propper class
