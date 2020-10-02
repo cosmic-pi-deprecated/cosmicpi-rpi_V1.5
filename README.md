@@ -1,3 +1,9 @@
+Bug - when using the 'science' menu to download data, it's limited to 20 events. To get around this you need to make the following change here:
+Note - this calls down a package from PIP. in this package, once installed you need to modify:
+The file /usr/local/lib/python2.7/dist-packages/cosmicpi/rest/series.py
+replace line26 with limit = int(request.args.get('limit', 127872000))
+This should allow a year+ of data to be downloaded; beware it will take a few seconds!
+
 # Cosmic Pi Software on the Raspberry Pi
 
 This software runs on the raspberry pi, which is integral to the CosmicPi V1.5.
