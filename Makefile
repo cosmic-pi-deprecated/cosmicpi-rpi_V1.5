@@ -1,11 +1,15 @@
 clean:
 	rm -rf dist cosmicpi.egg-info build
 
-publish: clean
-	python setup.py sdist upload
+publish-test: clean
+	python3 setup.py sdist bdist_wheel
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-ci-publish:
-	echo '[pypi]' > ~/.pypirc
-	echo 'username=lukicdarkoo' >> ~/.pypirc
-	echo "password=${PYPI_PASSWORD}" >> ~/.pypirc
+publish: clean
+	python3 setup.py sdist bdist_wheel
+	twine upload dist/*
+
+publish-ci:
+	# Set environment variables `TWINE_PASSWORD` and `TWINE_USERNAME`
+	pip3 install twine --user 
 	$(MAKE) publish
