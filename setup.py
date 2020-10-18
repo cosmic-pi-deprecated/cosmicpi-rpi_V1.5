@@ -84,7 +84,7 @@ class CustomEggInfoCommand(egg_info):
 
 
 setup(name='cosmicpi',
-    version='1.5.7',
+    version='1.5.8',
     description='UI for the CosmicPi cosmic ray detector',
     long_description='This software provides the user interface, temporary storage and connection to the internet storage for the detectors of the CosmicPi project. The Cosmic Pi project aims to build the world\'s largest open source distributed cosmic ray telescope. You too can be a part of the project, by becoming a Cosmic Pixel!',
     platforms=['noarch'],

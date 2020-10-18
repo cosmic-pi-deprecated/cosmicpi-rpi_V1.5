@@ -100,6 +100,11 @@ export default {
                         scaleLabel: {
                             display: true,
                             labelString: 'Number of events'
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                            min: 0,
+                            stepSize: 1
                         }
                     }]
                 },

@@ -23,7 +23,6 @@
 
 <script>
 import Value from './Value.vue';
-import TimeSeries from './TimeSeries.vue';
 import Location from './Location.vue';
 import Histogram from './Histogram.vue';
 

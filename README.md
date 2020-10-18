@@ -9,7 +9,7 @@ More instructions will follow when the software has reached the state of the V2 
 ## Installation
 For CosmicPi software installation only please use:
 ```
-pip install cosmicpi
+pip3 install cosmicpi
 ```
 
 If you have scratch Raspbian image and you want to install software, expand filesystem, configure AP... please use:
@@ -32,7 +32,7 @@ From the Raspberry Pi itself the application is available at:
 
 When used as an access point the application is available at:
 
-`http://cosmicpi.local/` or `http://192.168.10.1/`
+`http://cosmicpi.local/` or `http://192.168.12.1/`
 
 #### Debugging the software:
 Stop all mentioned services. After this you should be able to run the software directly via the commandline.

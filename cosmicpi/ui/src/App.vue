@@ -40,7 +40,7 @@
       </ul>
       <hr class="hideable" />
       <p class="hideable" id="copyright">
-          Copyright © Cosmic Pi Inc. 2018. <br />All Rights Reserved. <br />
+          Copyright © Cosmic Pi Inc. 2020. <br />All Rights Reserved. <br />
       </p>
   </div>
 

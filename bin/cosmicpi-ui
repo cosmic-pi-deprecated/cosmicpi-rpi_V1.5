@@ -12,6 +12,7 @@ UI_DIR = os.path.dirname(path)
 
 if __name__ == '__main__':
     app = create_app()
+    port = os.environ['PORT'] if 'PORT' in os.environ else 80
 
     @app.route('/dist/<path:path>')
     def serve_page(path):
@@ -21,4 +22,4 @@ if __name__ == '__main__':
     def server_index():
         return send_from_directory(UI_DIR, 'index.html')
 
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True, host='0.0.0.0', port=port)
